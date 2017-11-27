@@ -3,7 +3,7 @@ defmodule ChorizoCore.UsersRepository do
 
   defdelegate any?(enum), to: Enum
 
-  def insert(%User{} = user, [] = users) do
+  def insert(%User{} = user, [] = _users) do
      user = Map.put(user, :admin, true)
     {:ok, user, [user]}
   end
@@ -18,7 +18,7 @@ defmodule ChorizoCore.UsersRepository do
   def new, do: {:ok, []}
   def new(users) when is_list(users) do
     users = Enum.reduce(users, [], fn user, acc ->
-      {:ok, user, users} = insert(user, acc)
+      {:ok, _user, users} = insert(user, acc)
       users
     end)
     {:ok, users}
