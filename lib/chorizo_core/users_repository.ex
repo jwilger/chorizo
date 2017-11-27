@@ -1,32 +1,63 @@
 defmodule ChorizoCore.UsersRepository do
   alias ChorizoCore.User
+  alias __MODULE__.Server
 
-  defdelegate any?(enum), to: Enum
+  defdelegate start_link(args), to: Server
+  defdelegate start_link(args, type), to: Server
 
-  def insert(%User{} = user, [] = _users) do
-     user = Map.put(user, :admin, true)
-    {:ok, user, [user]}
+  def insert(server \\ {:global, Server}, %User{} = user) do
+    GenServer.call(server, {:insert, user})
   end
-  def insert(%User{} = user, users) when is_list(users) do
-    if Enum.any?(users, &(user.username == &1.username)) do
-      {:error, "username " <> user.username <> " is taken"}
-    else
-      {:ok, user, [user | users]}
+
+  def find_by_username(server \\ {:global, Server}, username)
+  when is_binary(username) do
+    GenServer.call(server, {:find_by_username, username})
+  end
+
+  def count(server \\ {:global, Server}) do
+    GenServer.call(server, {:count})
+  end
+
+  defmodule Server do
+    use GenServer
+
+    alias ChorizoCore.User
+
+    def start_link([]) do
+      GenServer.start_link(__MODULE__, [], name: {:global, __MODULE__})
     end
-  end
 
-  def new, do: {:ok, []}
-  def new(users) when is_list(users) do
-    users = Enum.reduce(users, [], fn user, acc ->
-      {:ok, _user, users} = insert(user, acc)
-      users
-    end)
-    {:ok, users}
-  end
+    def start_link(users, :local) do
+      GenServer.start_link(__MODULE__, users)
+    end
 
-  def find_by_username(username, users) do
-    Enum.find_value(users, :not_found, fn user ->
-      user.username == username && {:ok, user}
-    end)
+    def init(users) when is_list(users) do
+      {:ok, users}
+    end
+
+    def handle_call({:insert, %User{} = user}, _from, current_state) do
+      user = if Enum.empty?(current_state) do
+        Map.put(user, :admin, true)
+      else
+        user
+      end
+      if Enum.any?(current_state, &(&1.username == user.username)) do
+        {:reply, {:error, "attempted to insert duplicate username"}, current_state}
+      else
+        {:reply, {:ok, user}, [user | current_state]}
+      end
+    end
+
+    def handle_call({:find_by_username, username}, _from, current_state)
+    when is_binary(username) do
+      result = Enum.find_value(current_state, :not_found, fn user ->
+        user.username == username && {:ok, user}
+      end)
+      {:reply, result, current_state}
+    end
+
+    def handle_call({:count}, _from, current_state) do
+      {:reply, {:ok, Enum.count(current_state)}, current_state}
+    end
   end
 end

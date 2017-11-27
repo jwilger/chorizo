@@ -1,65 +1,33 @@
 defmodule ChorizoCore.UserManagement do
-  use GenServer
-
   alias ChorizoCore.{User, UsersRepository}
 
-  def start_link do
-    GenServer.start_link(__MODULE__, [], name: server_name())
-  end
+  def create_user(server \\ {:global, UsersRepository}, user, options)
 
-  def server_name do
-    {:global, __MODULE__}
-  end
-
-  def init(_) do
-    UsersRepository.new
-  end
-
-  def create_user(server, %User{} = user, as: %User{} = as) do
-    GenServer.call(server, {:create_user, user, as: as})
-  end
-
-  def handle_call({:create_user, user, [as: as]}, _from, current_state) do
-    handle_create_user(user, as, current_state)
-  end
-
-  defp handle_create_user(%User{} = user, %User{anonymous: true},
-                          current_state) do
-    if users_exist?(current_state) do
-      not_authorized_reply(current_state)
+  def create_user(server, %User{} = user, as: %User{anonymous: true}) do
+    {:ok, count} = UsersRepository.count(server)
+    if count > 0 do
+      :not_authorized
     else
-      create_user_and_reply(user, current_state)
-    end
-  end
-  defp handle_create_user(%User{} = user, %User{} = as, current_state) do
-    if authorized?(:create_user, as, current_state) do
-      create_user_and_reply(user, current_state)
-    else
-      not_authorized_reply(current_state)
+      UsersRepository.insert(server, user)
     end
   end
 
-  defp authorized?(:create_user, %User{anonymous: false} = user, state) do
+  def create_user(server, %User{} = user, as: as) do
+    if authorized?(server, :create_user, as) do
+      UsersRepository.insert(server, user)
+    else
+      :not_authorized
+    end
+  end
+
+  defp authorized?(server, :create_user, %User{} = user) do
     with {:ok, %User{admin: true}} <-
-      UsersRepository.find_by_username(user.username, state)
+      UsersRepository.find_by_username(server, user.username)
     do
       true
     else
       :not_found -> false
       {:ok, _user} -> false
     end
-  end
-
-  defp users_exist?(state) do
-    UsersRepository.any?(state)
-  end
-
-  defp create_user_and_reply(user, current_state) do
-    {:ok, user, new_state} = UsersRepository.insert(user, current_state)
-    {:reply, {:ok, user}, new_state}
-  end
-
-  defp not_authorized_reply(current_state) do
-    {:reply, :not_authorized, current_state}
   end
 end
