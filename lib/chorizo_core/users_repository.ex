@@ -5,16 +5,20 @@ defmodule ChorizoCore.UsersRepository do
   defdelegate start_link(args), to: Server
   defdelegate start_link(args, type), to: Server
 
-  def insert(server \\ {:global, Server}, %User{} = user) do
+  def server_name do
+    {:global, __MODULE__.Server}
+  end
+
+  def insert(server \\ server_name(), %User{} = user) do
     GenServer.call(server, {:insert, user})
   end
 
-  def find_by_username(server \\ {:global, Server}, username)
+  def find_by_username(server \\ server_name(), username)
   when is_binary(username) do
     GenServer.call(server, {:find_by_username, username})
   end
 
-  def count(server \\ {:global, Server}) do
+  def count(server \\ server_name()) do
     GenServer.call(server, {:count})
   end
 
