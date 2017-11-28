@@ -6,10 +6,9 @@ defmodule ChorizoCore.UserManagement do
   alias ChorizoCore.{Authorization, User, UsersRepository}
 
   defdelegate authorized?(permission, user, server), to: Authorization
+  defdelegate users_repo(), to: UsersRepository, as: :server_name
 
-  def create_user(server \\ UsersRepository.server_name(), user, options)
-
-  def create_user(server, %User{} = user, as: as) do
+  def create_user(server \\ users_repo(), %User{} = user, as: as) do
     if authorized?(:manage_users, as, server) do
       UsersRepository.insert(server, user)
     else
