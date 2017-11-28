@@ -1,7 +1,12 @@
 defmodule ChorizoCore.Authorization do
+  @moduledoc """
+  Used to determine whether a particular user has a named permission
+  """
+
   alias ChorizoCore.{User, UsersRepository}
 
-  def authorized?(permission, user, users_repository \\ UsersRepository.server_name)
+  def authorized?(permission, user,
+                  users_repository \\ UsersRepository.server_name)
 
   def authorized?(:manage_users, %User{anonymous: true}, repo) do
     {:ok, count} = UsersRepository.count(repo)

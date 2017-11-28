@@ -1,4 +1,16 @@
 defmodule ChorizoCore.UsersRepository do
+  @moduledoc """
+  Functions for managing the repository of known user accounts
+
+  This module contains the API functions to be used directly by other modules;
+  the actual GenServer and callbacks are implemented in the nested
+  ChorizoCore.UsersRepository.Server module.
+
+  Note that, at this time, users are simply stored in a List structure in the
+  GenServer state, i.e. all user accounts will disappear if and when the process
+  is stopped. Persisting users indefinitely will be addressed in the future.
+  """
+
   alias ChorizoCore.User
   alias __MODULE__.Server
 
@@ -23,6 +35,12 @@ defmodule ChorizoCore.UsersRepository do
   end
 
   defmodule Server do
+    @moduledoc """
+    Implements the GenServer that holds the known user accounts in its state.
+    See ChorizoCore.UsersRepository for the API that is intended to be used by
+    other modules for manipulating this state.
+    """
+
     use GenServer
 
     alias ChorizoCore.User
@@ -46,7 +64,8 @@ defmodule ChorizoCore.UsersRepository do
         user
       end
       if Enum.any?(current_state, &(&1.username == user.username)) do
-        {:reply, {:error, "attempted to insert duplicate username"}, current_state}
+        {:reply, {:error, "attempted to insert duplicate username"},
+          current_state}
       else
         {:reply, {:ok, user}, [user | current_state]}
       end

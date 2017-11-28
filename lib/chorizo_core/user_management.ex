@@ -1,4 +1,8 @@
 defmodule ChorizoCore.UserManagement do
+  @moduledoc """
+  External API for managing user accounts
+  """
+
   alias ChorizoCore.{Authorization, User, UsersRepository}
 
   defdelegate authorized?(permission, user, server), to: Authorization

@@ -24,12 +24,14 @@ defmodule ChorizoCore.UserManagementTest do
     test "as a user who does not exist" do
       repo_pid = repo()
       assert :not_authorized =
-        create_user(repo_pid, %User{username: "bob"}, as: User.new(username: "Fred"))
+        create_user(repo_pid, %User{username: "bob"},
+                    as: User.new(username: "Fred"))
     end
 
     test "as a user who is not an admin" do
       repo_pid = repo()
-      {:ok, admin} = create_user(repo_pid, %User{username: "admin", admin: true},
+      {:ok, admin} = create_user(repo_pid,
+                                 %User{username: "admin", admin: true},
                                  as: anonymous_user())
       {:ok, non_admin} = create_user(repo_pid, %User{username: "nonadmin"},
                                      as: admin)
@@ -39,7 +41,8 @@ defmodule ChorizoCore.UserManagementTest do
 
     test "as a user who is a admin" do
       repo_pid = repo()
-      {:ok, admin} = create_user(repo_pid, %User{username: "admin", admin: true},
+      {:ok, admin} = create_user(repo_pid,
+                                 %User{username: "admin", admin: true},
                                  as: anonymous_user())
       assert {:ok, %User{username: "bob"}} =
         create_user(repo_pid, %User{username: "bob"}, as: admin)
