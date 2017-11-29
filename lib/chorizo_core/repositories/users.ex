@@ -1,10 +1,10 @@
-defmodule ChorizoCore.UsersRepository do
+defmodule ChorizoCore.Repositories.Users do
   @moduledoc """
   Functions for managing the repository of known user accounts
 
   This module contains the API functions to be used directly by other modules;
   the actual GenServer and callbacks are implemented in the nested
-  ChorizoCore.UsersRepository.Server module.
+  ChorizoCore.Repositories.Users.Server module.
 
   Note that, at this time, users are simply stored in a List structure in the
   GenServer state, i.e. all user accounts will disappear if and when the process
@@ -37,7 +37,7 @@ defmodule ChorizoCore.UsersRepository do
   defmodule Server do
     @moduledoc """
     Implements the GenServer that holds the known user accounts in its state.
-    See ChorizoCore.UsersRepository for the API that is intended to be used by
+    See ChorizoCore.Repositories.Users for the API that is intended to be used by
     other modules for manipulating this state.
     """
 

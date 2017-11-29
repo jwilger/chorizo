@@ -3,13 +3,13 @@ defmodule ChorizoCore.Authorization do
   Used to determine whether a particular user has a named permission
   """
 
-  alias ChorizoCore.{Entities.User, UsersRepository}
+  alias ChorizoCore.{Entities.User, Repositories.Users}
 
   def authorized?(permission, user,
-                  users_repository \\ UsersRepository.server_name)
+                  users_repository \\ Users.server_name)
 
   def authorized?(:manage_users, %User{anonymous: true}, repo) do
-    {:ok, count} = UsersRepository.count(repo)
+    {:ok, count} = Users.count(repo)
     count == 0
   end
 
@@ -18,7 +18,7 @@ defmodule ChorizoCore.Authorization do
   end
 
   defp find_and_authorize(repo, user, authorizer) do
-    with {:ok, user} <- UsersRepository.find_by_username(repo, user.username)
+    with {:ok, user} <- Users.find_by_username(repo, user.username)
     do
       authorizer.(user)
     else

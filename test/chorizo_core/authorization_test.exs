@@ -2,7 +2,7 @@ defmodule ChorizoCore.AuthorizationTest do
   use ExUnit.Case, async: true
   doctest ChorizoCore.Authorization
 
-  alias ChorizoCore.{Entities.User, UsersRepository, Authorization}
+  alias ChorizoCore.{Entities.User, Repositories.Users, Authorization}
 
   defdelegate authorized?(permission, user, users_repository), to: Authorization
 
@@ -48,7 +48,7 @@ defmodule ChorizoCore.AuthorizationTest do
   end
 
   defp users_repo(users \\ []) when is_list(users) do
-    {:ok, pid} = UsersRepository.start_link(users, :local)
+    {:ok, pid} = Users.start_link(users, :local)
     pid
   end
 end

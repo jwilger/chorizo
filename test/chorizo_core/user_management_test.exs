@@ -3,7 +3,7 @@ defmodule ChorizoCore.UserManagementTest do
 
   doctest ChorizoCore.UserManagement
 
-  alias ChorizoCore.{Entities.User, UserManagement, UsersRepository}
+  alias ChorizoCore.{Entities.User, UserManagement, Repositories.Users}
 
   defdelegate create_user(server, user, options), to: UserManagement
 
@@ -50,7 +50,7 @@ defmodule ChorizoCore.UserManagementTest do
   end
 
   defp repo do
-    {:ok, pid} = UsersRepository.start_link([], :local)
+    {:ok, pid} = Users.start_link([], :local)
     pid
   end
 
