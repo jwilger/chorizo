@@ -2,7 +2,7 @@ defmodule ChorizoCore.AuthorizationTest do
   use ExUnit.Case, async: true
   doctest ChorizoCore.Authorization
 
-  alias ChorizoCore.{User, UsersRepository, Authorization}
+  alias ChorizoCore.{Entities.User, UsersRepository, Authorization}
 
   defdelegate authorized?(permission, user, users_repository), to: Authorization
 

@@ -1,4 +1,4 @@
-defmodule ChorizoCore.User do
+defmodule ChorizoCore.Entities.User do
   @moduledoc """
   Represents a person with access to the application
   """

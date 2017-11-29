@@ -3,7 +3,7 @@ defmodule ChorizoCore.UserManagement do
   External API for managing user accounts
   """
 
-  alias ChorizoCore.{Authorization, User, UsersRepository}
+  alias ChorizoCore.{Authorization, Entities.User, UsersRepository}
 
   defdelegate authorized?(permission, user, server), to: Authorization
   defdelegate users_repo(), to: UsersRepository, as: :server_name

@@ -3,7 +3,7 @@ defmodule ChorizoCore.UserManagementTest do
 
   doctest ChorizoCore.UserManagement
 
-  alias ChorizoCore.{User, UserManagement, UsersRepository}
+  alias ChorizoCore.{Entities.User, UserManagement, UsersRepository}
 
   defdelegate create_user(server, user, options), to: UserManagement
 

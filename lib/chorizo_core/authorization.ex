@@ -3,7 +3,7 @@ defmodule ChorizoCore.Authorization do
   Used to determine whether a particular user has a named permission
   """
 
-  alias ChorizoCore.{User, UsersRepository}
+  alias ChorizoCore.{Entities.User, UsersRepository}
 
   def authorized?(permission, user,
                   users_repository \\ UsersRepository.server_name)

@@ -1,6 +1,6 @@
 defmodule ChorizoCore.UsersRepositoryTest do
   use ExUnit.Case, async: true
-  alias ChorizoCore.{UsersRepository, User}
+  alias ChorizoCore.{UsersRepository, Entities.User}
 
   describe "insert/1" do
     test "adds valid %User{} to the repository" do

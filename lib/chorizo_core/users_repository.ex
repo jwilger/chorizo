@@ -11,7 +11,7 @@ defmodule ChorizoCore.UsersRepository do
   is stopped. Persisting users indefinitely will be addressed in the future.
   """
 
-  alias ChorizoCore.User
+  alias ChorizoCore.Entities.User
   alias __MODULE__.Server
 
   defdelegate start_link(args), to: Server
@@ -43,7 +43,7 @@ defmodule ChorizoCore.UsersRepository do
 
     use GenServer
 
-    alias ChorizoCore.User
+    alias ChorizoCore.Entities.User
 
     def start_link([]) do
       GenServer.start_link(__MODULE__, [], name: {:global, __MODULE__})

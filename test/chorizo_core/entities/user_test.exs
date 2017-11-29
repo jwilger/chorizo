@@ -1,8 +1,8 @@
-defmodule ChorizoCore.UserTest do
+defmodule ChorizoCore.Entities.UserTest do
   use ExUnit.Case, async: true
-  doctest ChorizoCore.User
+  doctest ChorizoCore.Entities.User
 
-  alias ChorizoCore.User
+  alias ChorizoCore.Entities.User
 
   describe "anonymous!/0" do
     test "returns an anonymous %User{}" do
