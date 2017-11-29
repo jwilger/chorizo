@@ -5,24 +5,23 @@ defmodule ChorizoCore.Authorization do
 
   alias ChorizoCore.{Entities.User, Repositories.Users}
 
-  def authorized?(permission, user,
-                  users_repository \\ Users.server_name)
+  def authorized?(permission, user, users_repo \\ Users)
 
-  def authorized?(:manage_users, %User{anonymous: true}, repo) do
-    {:ok, count} = Users.count(repo)
+  def authorized?(:manage_users, %User{anonymous: true}, users_repo) do
+    {:ok, count} = users_repo.count
     count == 0
   end
 
-  def authorized?(:manage_users, %User{} = user, repo) do
-    find_and_authorize(repo, user, &(&1.admin))
+  def authorized?(:manage_users, %User{} = user, users_repo) do
+    find_and_authorize(users_repo, user, &(&1.admin))
   end
 
-  defp find_and_authorize(repo, user, authorizer) do
-    with {:ok, user} <- Users.find_by_username(repo, user.username)
+  defp find_and_authorize(users_repo, user, authorizer) do
+    with {:ok, user} <- users_repo.first(username: user.username)
     do
       authorizer.(user)
     else
-      :not_found -> false
+      {:not_found, _} -> false
     end
   end
 end

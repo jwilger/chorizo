@@ -11,6 +11,8 @@ defmodule ChorizoCore.Repositories.Users do
   is stopped. Persisting users indefinitely will be addressed in the future.
   """
 
+  @behaviour ChorizoCore.Repositories.API
+
   alias ChorizoCore.Entities.User
   alias __MODULE__.Server
 
@@ -21,17 +23,21 @@ defmodule ChorizoCore.Repositories.Users do
     {:global, __MODULE__.Server}
   end
 
-  def insert(server \\ server_name(), %User{} = user) do
-    GenServer.call(server, {:insert, user})
+  def reset do
+    GenServer.call(server_name(), :reset)
   end
 
-  def find_by_username(server \\ server_name(), username)
+  def insert(%User{} = user) do
+    GenServer.call(server_name(), {:insert, user})
+  end
+
+  def first(username: username)
   when is_binary(username) do
-    GenServer.call(server, {:find_by_username, username})
+    GenServer.call(server_name(), {:first, username: username})
   end
 
-  def count(server \\ server_name()) do
-    GenServer.call(server, {:count})
+  def count do
+    GenServer.call(server_name(), {:count})
   end
 
   defmodule Server do
@@ -57,6 +63,10 @@ defmodule ChorizoCore.Repositories.Users do
       {:ok, users}
     end
 
+    def handle_call(:reset, _from, _current_state) do
+      {:reply, nil, []}
+    end
+
     def handle_call({:insert, %User{} = user}, _from, current_state) do
       user = if Enum.empty?(current_state) do
         Map.put(user, :admin, true)
@@ -71,9 +81,9 @@ defmodule ChorizoCore.Repositories.Users do
       end
     end
 
-    def handle_call({:find_by_username, username}, _from, current_state)
+    def handle_call({:first, username: username}, _from, current_state)
     when is_binary(username) do
-      result = Enum.find_value(current_state, :not_found, fn user ->
+      result = Enum.find_value(current_state, {:not_found, nil}, fn user ->
         user.username == username && {:ok, user}
       end)
       {:reply, result, current_state}
