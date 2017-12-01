@@ -2,54 +2,80 @@ defmodule ChorizoCore.Repositories.Users do
   @moduledoc """
   Functions for managing the repository of known user accounts
 
-  This module contains the API functions to be used directly by other modules;
-  the actual GenServer and callbacks are implemented in the nested
-  ChorizoCore.Repositories.Users.Server module.
-
   Note that, at this time, users are simply stored in a List structure in the
   GenServer state, i.e. all user accounts will disappear if and when the process
   is stopped. Persisting users indefinitely will be addressed in the future.
   """
 
-  @behaviour ChorizoCore.Repositories.API
-
   alias ChorizoCore.Entities.User
+  alias ChorizoCore.Repositories.API
   alias __MODULE__.Server
 
-  defdelegate start_link(args), to: Server
-  defdelegate start_link(args, type), to: Server
+  @behaviour API
 
-  def server_name do
-    {:global, __MODULE__.Server}
-  end
+  @typedoc """
+  The module implementing the users repository. Must implement the
+  `ChorizoCore.Repositories.API` behaviour. Defaults to
+  `ChorizoCore.Repositories.Users`.
+  """
+  @type t :: module
 
+  @doc """
+  Resets the repository to be empty
+
+  **IMPORTANT**: This should only ever be called from tests. It is intended to
+  reset global repository data in between tests, so that a test is guaranteed a
+  clean starting point.
+  """
+  @spec reset() :: []
   def reset do
-    GenServer.call(server_name(), :reset)
+    GenServer.call(Server.server_name(), :reset)
   end
 
+  @impl API
+  @doc """
+  Adds the `user` to the repository
+  """
+  @spec insert(User.t) :: API.single_result(User.t)
   def insert(%User{} = user) do
-    GenServer.call(server_name(), {:insert, user})
+    GenServer.call(Server.server_name(), {:insert, user})
   end
 
-  def first(username: username)
-  when is_binary(username) do
-    GenServer.call(server_name(), {:first, username: username})
+  @impl API
+  @doc """
+  Returns the first user with attributes matching `search_options`
+
+  `search_options` should be a keyword list of `%ChorizoCore.Entities.User{}`
+  keys along with a value to be matched. At this time, only exactly-equal values
+  are supported.
+  """
+  @spec first(keyword()) :: API.single_result(User.t)
+  def first(search_options \\ []) when is_list(search_options) do
+    GenServer.call(Server.server_name(), {:first, search_options})
   end
 
-  def count do
-    GenServer.call(server_name(), {:count})
+  @impl API
+  @doc """
+  Returns the number of users in the repository
+
+  *Note that--at this time--search options are not used, and only the total
+  number of users will be returned.*
+  """
+  @spec count(keyword()) :: API.single_result(integer())
+  def count(_search_options \\ []) do
+    GenServer.call(Server.server_name(), {:count})
   end
 
   defmodule Server do
-    @moduledoc """
-    Implements the GenServer that holds the known user accounts in its state.
-    See ChorizoCore.Repositories.Users for the API that is intended to be used by
-    other modules for manipulating this state.
-    """
+    @moduledoc false
 
     use GenServer
 
     alias ChorizoCore.Entities.User
+
+    def server_name do
+      {:global, __MODULE__}
+    end
 
     def start_link([]) do
       GenServer.start_link(__MODULE__, [], name: {:global, __MODULE__})
@@ -81,10 +107,9 @@ defmodule ChorizoCore.Repositories.Users do
       end
     end
 
-    def handle_call({:first, username: username}, _from, current_state)
-    when is_binary(username) do
+    def handle_call({:first, search_options}, _from, current_state) do
       result = Enum.find_value(current_state, {:not_found, nil}, fn user ->
-        user.username == username && {:ok, user}
+        match?(^search_options, user) && {:ok, user}
       end)
       {:reply, result, current_state}
     end

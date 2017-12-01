@@ -22,7 +22,8 @@ defmodule ChorizoCore.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mox, "~>0.3", only: :test}
+      {:mox, "~> 0.3", only: :test},
+      {:ex_doc, "~> 0.16", only: :dev}
     ]
   end
 end
