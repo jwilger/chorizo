@@ -28,7 +28,7 @@ defmodule ChorizoCore.Repositories.UsersTest do
     end
 
     test "does not let you add duplicate usernames" do
-      {:ok, user} = Users.insert(User.new(username: "bob"))
+      Users.insert(User.new(username: "bob"))
       assert {:error, "attempted to insert duplicate username"} =
         Users.insert(User.new(username: "bob"))
     end
@@ -45,7 +45,7 @@ defmodule ChorizoCore.Repositories.UsersTest do
     end
 
     test "returns :not_found if only some attributes match" do
-      {:ok, user} = Users.insert(User.new(username: "bob", admin: true))
+      Users.insert(User.new(username: "bob", admin: true))
       assert {:not_found, nil} =
         Users.first(username: "bob", admin: "false")
     end

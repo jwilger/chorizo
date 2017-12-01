@@ -12,7 +12,8 @@ defmodule ChorizoCore.UserManagement do
 
   Requires the `:manage_users` permission
   """
-  @spec create_user(Users.t, User.t, as: User.t) :: {:ok, User.t} | :not_authorized
+  @spec create_user(Users.t, User.t, as: User.t) :: {:ok, User.t}
+    | :not_authorized
   def create_user(users_repo \\ Users, %User{} = user, as: as) do
     if authorized?(:manage_users, as, users_repo) do
       users_repo.insert(user)
