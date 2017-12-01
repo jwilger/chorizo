@@ -109,7 +109,8 @@ defmodule ChorizoCore.Repositories.Users do
 
     def handle_call({:first, search_options}, _from, current_state) do
       result = Enum.find_value(current_state, {:not_found, nil}, fn user ->
-        match?(^search_options, user) && {:ok, user}
+        matcher = fn {key, value} -> match?(%{^key => ^value}, user) end
+        Enum.all?(search_options, matcher) && {:ok, user}
       end)
       {:reply, result, current_state}
     end
