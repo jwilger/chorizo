@@ -77,6 +77,26 @@ defmodule ChorizoCore do
   defdelegate anonymous_user!(), to: ChorizoCore.Entities.User, as: :anonymous!
 
   @doc """
+  Determines if the User is anonymous
+
+  ```
+  iex> import ChorizoCore
+  iex> user = new_user()
+  iex> is_anonymous(user)
+  false
+  ```
+
+  ```
+  iex> import ChorizoCore
+  iex> user = anonymous_user!()
+  iex> is_anonymous(user)
+  true
+  ```
+  """
+  @spec is_anonymous(user) :: boolean
+  defdelegate is_anonymous(user), to: ChorizoCore.Entities.User
+
+  @doc """
   Creates new users in the system
 
   When no users yet exist, the anonymous user can create a new user:

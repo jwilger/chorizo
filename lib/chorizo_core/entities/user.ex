@@ -1,10 +1,13 @@
 defmodule ChorizoCore.Entities.User do
   @moduledoc """
   """
+
+  alias __MODULE__
+
   @typedoc """
   Contains the data related to an individual user of the system
   """
-  @type t() :: %ChorizoCore.Entities.User{
+  @type t() :: %User{
     username: String.t,
     anonymous: boolean(),
     admin: boolean()
@@ -20,6 +23,14 @@ defmodule ChorizoCore.Entities.User do
   """
   @spec anonymous!() :: t()
   def anonymous!, do: new(anonymous: true)
+
+  @doc """
+  Determines if the User is anonymous
+  """
+  @spec is_anonymous(t) :: boolean
+  def is_anonymous(%User{anonymous: true}), do: true
+  def is_anonymous(%User{anonymous: false}), do: false
+
 
   @doc """
   Builds and returns a `%ChorizoCore.Entities.User{}` from `propterties`
