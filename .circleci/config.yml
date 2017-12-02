@@ -96,7 +96,7 @@ workflows:
       - publish_docs:
           filters:
             branches:
-              ignore: gh-pages
+              only: master
       - code-quality:
           requires:
             - build
