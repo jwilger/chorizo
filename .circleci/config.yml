@@ -3,20 +3,26 @@
 # Check https://circleci.com/docs/2.0/language-elixir/ for more details
 version: 2
 jobs:
+  install-deps:
+    docker:
+      # specify the version here
+      - image: circleci/elixir:1.5.2
+    steps:
+      - checkout
+      - run: mix local.hex --force
+      - run: mix deps.get
+    working_directory: ~/repo
   build:
     docker:
       # specify the version here
       - image: circleci/elixir:1.5.2
     working_directory: ~/repo
     steps:
-      - checkout
-      - run: mix local.hex --force
-      - run: mix deps.get
       - run: mix test
+      - run: mix docs
       - run: mix credo
       - run: mix dogma
       - run: mix dialyzer
-      - run: mix docs
   publish_docs:
     docker:
       # specify the version here
@@ -24,14 +30,27 @@ jobs:
     working_directory: ~/repo
     steps:
       - run: scripts/update_master_documentation.sh
+  dialyzer:
+    docker:
+      # specify the version here
+      - image: circleci/elixir:1.5.2
+    working_directory: ~/repo
+    steps:
+      - run: mix dialyzer
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
+      - install-deps
+      - build:
+          requires:
+            - install-deps
       - publish_docs:
           requires:
-            - build
+            - install-deps
           filters:
             branches:
               only: master
+      - dialyzer:
+          requires:
+            - install-deps
