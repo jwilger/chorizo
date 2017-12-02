@@ -55,7 +55,6 @@ jobs:
             - _build
             - deps
             - ~/.mix
-      - run: mix docs
       - run: scripts/update_master_documentation.sh
   code-quality:
     docker:
