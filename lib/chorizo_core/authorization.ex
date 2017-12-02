@@ -4,11 +4,20 @@ defmodule ChorizoCore.Authorization do
   """
 
   @typedoc """
+  The module implementing the authorization logic. Must implement the
+  `ChorizoCore.Repositories.Authorization` behaviour. Defaults to
+  `ChorizoCore.Repositories.Authorization`.
+  """
+  @type t :: module
+
+  @typedoc """
   A named permission used throughout the system
   """
   @type permission :: atom
 
   alias ChorizoCore.{Entities.User, Repositories.Users}
+
+  @callback authorized?(permission, User.t, Users.t) :: boolean
 
   @doc """
   Returns true if the user is granted the specified permission

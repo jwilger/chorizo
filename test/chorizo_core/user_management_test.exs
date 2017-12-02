@@ -1,48 +1,85 @@
 defmodule ChorizoCore.UserManagementTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
+
+  import Mox
+
   doctest ChorizoCore.UserManagement
 
-  alias ChorizoCore.{Entities.User, UserManagement, Repositories.Users}
+  alias ChorizoCore.{Entities.User, UserManagement}
 
-  defdelegate create_user(user, options), to: UserManagement
-
-  setup do
-    Users.reset
-    on_exit &Users.reset/0
-    {:ok, no: :context}
+  setup_all do
+    defmock(ChorizoCore.UserManagementTest.MockAuth, for: ChorizoCore.Authorization)
+    defmock(ChorizoCore.UserManagementTest.MockUsers,
+            for: ChorizoCore.Repositories.API)
+    {:ok, auth_mod: ChorizoCore.UserManagementTest.MockAuth,
+          users_repo: ChorizoCore.UserManagementTest.MockUsers}
   end
 
-  describe "create_user/2" do
-    test "as anonymous user when no users exist" do
-      assert {:ok, %User{username: "bob", admin: true}} =
-        create_user(%User{username: "bob"}, as: User.anonymous!)
+  setup :verify_on_exit!
+
+  defp create_user(user, as: as) do
+    UserManagement.create_user(
+      user, [as: as],
+      ChorizoCore.UserManagementTest.MockUsers,
+      ChorizoCore.UserManagementTest.MockAuth
+    )
+  end
+
+  describe "create_user/4" do
+    test "checks if the user is authorized to :manage_users",
+    %{auth_mod: auth_mod, users_repo: users_repo} do
+      users_repo
+      |> stub(:insert, fn u -> {:ok, u} end)
+
+      as = User.new(username: "bob")
+
+      auth_mod
+      |> expect(:authorized?, fn :manage_users, ^as, ^users_repo -> true end)
+
+      create_user(User.new, as: as)
+    end
+  end
+
+  describe "create_user/4 when user is authorized" do
+    setup context do
+      context[:auth_mod]
+      |> stub(:authorized?, fn _, _, _ -> true end)
+
+      context[:users_repo]
+      |> stub(:insert, fn u -> {:ok, u} end)
+
+      context
     end
 
-    test "as anonynmous user when users already exist" do
-      create_user(%User{username: "bob"}, as: User.anonymous!)
-      assert :not_authorized =
-        create_user(%User{username: "alice"}, as: User.anonymous!)
+    test "new user is inserted into the repository",
+    %{users_repo: users_repo} do
+      user = User.new(username: "bob")
+      users_repo
+      |> expect(:insert, fn ^user -> {:ok, user} end)
+      create_user(user, as: User.new())
     end
 
-    test "as a user who does not exist" do
-      assert :not_authorized =
-        create_user(User.new(username: "bob"), as: User.new(username: "Fred"))
+    test "new user is returned" do
+      user = User.new(username: "bob")
+      {:ok, ^user} = create_user(user, as: User.new())
+    end
+  end
+
+  describe "create_user/4 when user is not authorized" do
+    setup context do
+      context[:auth_mod]
+      |> stub(:authorized?, fn _, _, _ -> false end)
+      context
     end
 
-    test "as a user who is not an admin" do
-      {:ok, admin} = create_user(User.new(username: "admin", admin: true),
-                                 as: User.anonymous!)
-      {:ok, non_admin} = create_user(User.new(username: "nonadmin"),
-                                     as: admin)
-      assert :not_authorized =
-        create_user(User.new(username: "bob"), as: non_admin)
+    test "new user is not inserted into the repository" do
+      # if it were, we would get a failure here about no expectation for
+      # insert/1
+      create_user(User.new(), as: User.new)
     end
 
-    test "as a user who is a admin" do
-      {:ok, admin} = create_user(User.new(username: "admin", admin: true),
-                                 as: User.anonymous!)
-      assert {:ok, %User{username: "bob", admin: false}} =
-        create_user(User.new(username: "bob"), as: admin)
+    test ":not_authorized is returned" do
+      assert :not_authorized = create_user(User.new(), as: User.new())
     end
   end
 end
