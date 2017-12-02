@@ -8,7 +8,8 @@ defmodule ChorizoCore.UserManagementTest do
   alias ChorizoCore.{Entities.User, UserManagement}
 
   setup_all do
-    defmock(ChorizoCore.UserManagementTest.MockAuth, for: ChorizoCore.Authorization)
+    defmock(ChorizoCore.UserManagementTest.MockAuth,
+            for: ChorizoCore.Authorization)
     defmock(ChorizoCore.UserManagementTest.MockUsers,
             for: ChorizoCore.Repositories.API)
     {:ok, auth_mod: ChorizoCore.UserManagementTest.MockAuth,
@@ -17,9 +18,9 @@ defmodule ChorizoCore.UserManagementTest do
 
   setup :verify_on_exit!
 
-  defp create_user(user, as: as) do
+  defp create_user(user, as_user) do
     UserManagement.create_user(
-      user, [as: as],
+      user, as_user,
       ChorizoCore.UserManagementTest.MockUsers,
       ChorizoCore.UserManagementTest.MockAuth
     )
@@ -31,12 +32,14 @@ defmodule ChorizoCore.UserManagementTest do
       users_repo
       |> stub(:insert, fn u -> {:ok, u} end)
 
-      as = User.new(username: "bob")
+     as_user = User.new(username: "bob")
 
       auth_mod
-      |> expect(:authorized?, fn :manage_users, ^as, ^users_repo -> true end)
+      |> expect(:authorized?, fn :manage_users, ^as_user, ^users_repo ->
+        true
+      end)
 
-      create_user(User.new, as: as)
+      create_user(User.new, as_user)
     end
   end
 
@@ -56,12 +59,12 @@ defmodule ChorizoCore.UserManagementTest do
       user = User.new(username: "bob")
       users_repo
       |> expect(:insert, fn ^user -> {:ok, user} end)
-      create_user(user, as: User.new())
+      create_user(user, User.new())
     end
 
     test "new user is returned" do
       user = User.new(username: "bob")
-      {:ok, ^user} = create_user(user, as: User.new())
+      {:ok, ^user} = create_user(user, User.new())
     end
   end
 
@@ -75,11 +78,11 @@ defmodule ChorizoCore.UserManagementTest do
     test "new user is not inserted into the repository" do
       # if it were, we would get a failure here about no expectation for
       # insert/1
-      create_user(User.new(), as: User.new)
+      create_user(User.new(), User.new)
     end
 
     test ":not_authorized is returned" do
-      assert :not_authorized = create_user(User.new(), as: User.new())
+      assert :not_authorized = create_user(User.new(), User.new())
     end
   end
 end

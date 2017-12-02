@@ -103,7 +103,7 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> create_user(new_user(username: "bob"), as: anonymous_user!())
+  iex> create_user(new_user(username: "bob"), anonymous_user!())
   {:ok, %ChorizoCore.Entities.User{
     username: "bob",
     anonymous: false,
@@ -115,8 +115,8 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> {:ok, bob} = create_user(new_user(username: "bob"), as: anonymous_user!())
-  iex> create_user(new_user(username: "ann"), as: bob)
+  iex> {:ok, bob} = create_user(new_user(username: "bob"), anonymous_user!())
+  iex> create_user(new_user(username: "ann"), bob)
   {:ok, %ChorizoCore.Entities.User{
     username: "ann",
     anonymous: false,
@@ -127,12 +127,12 @@ defmodule ChorizoCore do
   and users who are not admins can not create new users:
   ```
   iex> import ChorizoCore
-  iex> {:ok, bob} = create_user(new_user(username: "bob"), as: anonymous_user!())
-  iex> {:ok, ann} = create_user(new_user(username: "ann"), as: bob)
-  iex> create_user(new_user(username: "foo"), as: ann)
+  iex> {:ok, bob} = create_user(new_user(username: "bob"), anonymous_user!())
+  iex> {:ok, ann} = create_user(new_user(username: "ann"), bob)
+  iex> create_user(new_user(username: "foo"), ann)
   :not_authorized
   ```
   """
-  @spec create_user(user, [as: user]) :: {:ok, user} | :not_authorized
-  defdelegate create_user(user, options), to: ChorizoCore.UserManagement
+  @spec create_user(user, user) :: {:ok, user} | :not_authorized
+  defdelegate create_user(user, as_user), to: ChorizoCore.UserManagement
 end
