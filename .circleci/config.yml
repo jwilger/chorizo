@@ -92,14 +92,14 @@ workflows:
       - build:
           filters:
             branches:
-              except: gh-pages
+              ignore: gh-pages
       - publish_docs:
           filters:
             branches:
-              except: gh-pages
+              ignore: gh-pages
       - code-quality:
           requires:
             - build
           filters:
             branches:
-              except: gh-pages
+              ignore: gh-pages
