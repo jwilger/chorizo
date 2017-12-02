@@ -8,7 +8,8 @@ defmodule ChorizoCore.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      ChorizoCore.Repositories.Users.Server
+      ChorizoCore.Repositories.Users.Server,
+      ChorizoCore.Repositories.Chores.Server
       # Starts a worker by calling: ChorizoCore.Worker.start_link(arg)
       # {ChorizoCore.Worker, arg},
     ]

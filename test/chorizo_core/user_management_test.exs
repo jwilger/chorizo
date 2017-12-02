@@ -21,8 +21,8 @@ defmodule ChorizoCore.UserManagementTest do
   defp create_user(user, as_user) do
     UserManagement.create_user(
       user, as_user,
-      ChorizoCore.UserManagementTest.MockUsers,
-      ChorizoCore.UserManagementTest.MockAuth
+      users_repo: ChorizoCore.UserManagementTest.MockUsers,
+      auth_mod: ChorizoCore.UserManagementTest.MockAuth
     )
   end
 

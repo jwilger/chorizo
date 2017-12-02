@@ -10,9 +10,19 @@ defmodule ChorizoCore do
   """
 
   @typedoc """
+  May be either the specified type or the atom `:not_authorized`
+  """
+  @type auth(type) :: type | :not_authorized
+
+  @typedoc """
   A struct representing a User
   """
   @type user :: ChorizoCore.Entities.User.t
+
+  @typedoc """
+  A struct representing a Chore
+  """
+  @type chore :: ChorizoCore.Entities.Chore.t
 
   @doc """
   Builds and returns a new `%ChorizoCore.Entities.User{}` with the specified
@@ -133,6 +143,67 @@ defmodule ChorizoCore do
   :not_authorized
   ```
   """
-  @spec create_user(user, user) :: {:ok, user} | :not_authorized
+  @spec create_user(user, user) :: auth({:ok, user})
   defdelegate create_user(user, as_user), to: ChorizoCore.UserManagement
+
+  @doc """
+  Creates a new chore in the system
+
+  Users who are admins can create a new chore:
+
+  ```
+  iex> import ChorizoCore
+  iex> {:ok, admin} = create_user(new_user(username: "admin", admin: true),
+  iex>                                     anonymous_user!())
+  iex> create_chore(new_chore(name: "Foo"), admin)
+  {:ok, %ChorizoCore.Entities.Chore{
+    name: "Foo"
+  }}
+  ```
+
+  Users who are not admins can not create new chores:
+
+  ```
+  iex> import ChorizoCore
+  iex> {:ok, admin} = create_user(new_user(username: "admin", admin: true),
+  iex>                                     anonymous_user!())
+  iex> {:ok, user} = create_user(new_user(username: "non_admin", admin: false),
+  iex>                                    admin)
+  iex> create_chore(new_chore(name: "Foo"), user)
+  :not_authorized
+  ```
+
+  Anonymous users can not create new chores:
+  ```
+  iex> import ChorizoCore
+  iex> create_chore(new_chore(name: "Foo"), anonymous_user!())
+  :not_authorized
+  """
+  @spec create_chore(chore, user) :: auth({:ok, chore})
+  defdelegate create_chore(chore, as_user), to: ChorizoCore.ChoreManagement
+
+  @doc """
+  Builds and returns a new `%ChorizoCore.Entities.Chore{}` with the specified
+  attributes.
+
+  ```
+  iex> import ChorizoCore
+  iex> new_chore(name: "Eat the food.")
+  %ChorizoCore.Entities.Chore{
+    name: "Eat the food."
+  }
+  ```
+
+  Invalid attributes are ignored:
+
+  ```
+  iex> import ChorizoCore
+  iex> new_chore(name: "Eat the food.", foo: :bar)
+  %ChorizoCore.Entities.Chore{
+    name: "Eat the food."
+  }
+  ```
+  """
+  @spec new_chore(keyword()) :: chore
+  defdelegate new_chore(attributes), to: ChorizoCore.Entities.Chore, as: :new
 end

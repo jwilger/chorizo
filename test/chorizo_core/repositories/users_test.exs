@@ -32,6 +32,11 @@ defmodule ChorizoCore.Repositories.UsersTest do
       assert {:error, "attempted to insert duplicate username"} =
         Users.insert(User.new(username: "bob"))
     end
+
+    test "does not let you add an anonymous user" do
+      assert {:error, "attempted to insert anonymous user"} =
+        Users.insert(User.anonymous!)
+    end
   end
 
   describe "first/1" do

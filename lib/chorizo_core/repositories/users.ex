@@ -93,6 +93,10 @@ defmodule ChorizoCore.Repositories.Users do
       {:reply, nil, []}
     end
 
+    def handle_call({:insert, %User{anonymous: true}}, _from, current_state) do
+        {:reply, {:error, "attempted to insert anonymous user"},
+          current_state}
+    end
     def handle_call({:insert, %User{} = user}, _from, current_state) do
       user = if Enum.empty?(current_state) do
         Map.put(user, :admin, true)

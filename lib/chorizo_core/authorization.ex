@@ -3,6 +3,18 @@ defmodule ChorizoCore.Authorization do
   Used to determine whether a particular user has a named permission
   """
 
+  defmodule InvalidPermissionError do
+    @moduledoc false
+
+    defexception [:message]
+
+    def exception(value) do
+      msg = "Authorization library does not contain the requested " <>
+        "permission: #{inspect(value)}"
+      %InvalidPermissionError{message: msg}
+    end
+  end
+
   @typedoc """
   The module implementing the authorization logic. Must implement the
   `ChorizoCore.Repositories.Authorization` behaviour. Defaults to
@@ -35,6 +47,12 @@ defmodule ChorizoCore.Authorization do
   end
   def authorized?(:manage_users, %User{} = user, users_repo) do
     find_and_authorize(users_repo, user, &(&1.admin))
+  end
+  def authorized?(:manage_chores, %User{} = user, users_repo) do
+    find_and_authorize(users_repo, user, &(&1.admin))
+  end
+  def authorized?(permission, _user, _users_repo) do
+    raise InvalidPermissionError, permission
   end
 
   @spec find_and_authorize(Users.t, User.t, ((User.t) -> boolean)) :: boolean
