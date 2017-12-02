@@ -11,23 +11,23 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - v1-dependency-cache-{{ checksum "mix.lock" }}
-          - v1-dependency-cache
+          keys:
+            - v1-dependency-cache-{{ checksum "mix.lock" }}
+            - v1-dependency-cache
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix deps.compile
       - run: mix compile
       - run:
-        command: mix compile
-        environment:
-          MIX_ENV: test
+          command: mix compile
+          environment:
+            MIX_ENV: test
       - save_cache:
-        key: v1-dependency-cache-{{ checksum "mix.lock" }}
-        paths:
-          - _build
-          - deps
-          - ~/.mix
+          key: v1-dependency-cache-{{ checksum "mix.lock" }}
+          paths:
+            - _build
+            - deps
+            - ~/.mix
       - run: mix test
       - run: mix docs
   publish_docs:
@@ -38,23 +38,23 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - v1-dependency-cache-{{ checksum "mix.lock" }}
-          - v1-dependency-cache
+          keys:
+            - v1-dependency-cache-{{ checksum "mix.lock" }}
+            - v1-dependency-cache
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix deps.compile
       - run: mix compile
       - run:
-        command: mix compile
-        environment:
-          MIX_ENV: test
+          command: mix compile
+          environment:
+            MIX_ENV: test
       - save_cache:
-        key: v1-dependency-cache-{{ checksum "mix.lock" }}
-        paths:
-          - _build
-          - deps
-          - ~/.mix
+          key: v1-dependency-cache-{{ checksum "mix.lock" }}
+          paths:
+            - _build
+            - deps
+            - ~/.mix
       - run: mix docs
       - run: scripts/update_master_documentation.sh
   code-quality:
@@ -65,23 +65,23 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - v1-plt-cache-{{ checksum "mix.lock" }}
-          - v1-plt-cache
+          keys:
+            - v1-plt-cache-{{ checksum "mix.lock" }}
+            - v1-plt-cache
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix deps.compile
       - run: mix compile
       - run:
-        command: mix compile
-        environment:
-          MIX_ENV: test
+          command: mix compile
+          environment:
+            MIX_ENV: test
       - save_cache:
-        key: v1-plt-cache-{{ checksum "mix.lock" }}
-        paths:
-          - _build
-          - deps
-          - ~/.mix
+          key: v1-plt-cache-{{ checksum "mix.lock" }}
+          paths:
+            - _build
+            - deps
+            - ~/.mix
       - run: mix credo
       - run: mix dogma
       - run: mix dialyzer
