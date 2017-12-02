@@ -47,6 +47,5 @@ git push --force origin gh-pages
 # go back to where we started and remove the gh-pages git repo we made and used
 # for deployment
 cd ..
-rm -rf doc
 
 echo "Finished Deployment!"
