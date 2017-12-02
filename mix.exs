@@ -7,7 +7,16 @@ defmodule ChorizoCore.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+
+      # Docs
+      name: "ChorizoCore",
+      source_url: "https://github.com/jwilger/chorizo_core",
+      homepage_url: "http://johnwilger.com/chorizo_core",
+      docs: [
+        main: "README",
+        extras: ["README.md"]
+      ]
     ]
   end
 
