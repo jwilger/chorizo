@@ -17,4 +17,4 @@ jobs:
       - run: mix test
       - run: mix credo
       - run: mix dogma
-      - run: mix dializer
+      - run: mix dialyzer

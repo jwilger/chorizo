@@ -22,6 +22,9 @@ defmodule ChorizoCore.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 0.8", only: :dev, runtime: false},
+      {:dogma, "~> 0.1", only: :dev, runtime: false},
+      {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:mox, "~> 0.3", only: :test},
       {:ex_doc, "~> 0.16", only: :dev}
     ]
