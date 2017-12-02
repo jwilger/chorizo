@@ -10,11 +10,28 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-
-      # specify any bash command here prefixed with `run: `
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix test
       - run: mix credo
       - run: mix dogma
       - run: mix dialyzer
+      - run: mix docs
+  publish_docs:
+    docker:
+      # specify the version here
+      - image: circleci/elixir:1.5.2
+    working_directory: ~/repo
+    steps:
+      - run: scripts/update_master_documentation.sh
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - publish_docs:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
