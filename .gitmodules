@@ -1,0 +1,4 @@
+[submodule "docs"]
+	path = docs
+	url = git@github.com:jwilger/chorizo_core.git
+	branch = gh-pages
