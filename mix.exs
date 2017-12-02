@@ -23,8 +23,7 @@ defmodule ChorizoCore.Mixfile do
   defp deps do
     [
       {:mox, "~> 0.3", only: :test},
-      {:ex_doc, "~> 0.16", only: :dev},
-      {:uuid, "~> 1.1"}
+      {:ex_doc, "~> 0.16", only: :dev}
     ]
   end
 end
