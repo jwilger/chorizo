@@ -76,6 +76,7 @@ jobs:
           command: mix compile
           environment:
             MIX_ENV: test
+      - run: mix dialyzer --plt
       - save_cache:
           key: v1-plt-cache-{{ checksum "mix.lock" }}
           paths:
