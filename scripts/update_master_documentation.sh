@@ -11,10 +11,9 @@ set -e
 pwd
 remote=$(git config remote.origin.url)
 
-# make a directory to put the gp-pages branch
-rm -rf doc
-mkdir doc
+mix docs
 cd doc
+rm -rf .git
 # now lets setup a new repo so we can update the gh-pages branch
 git config --global user.email "$GH_EMAIL" > /dev/null 2>&1
 git config --global user.name "$GH_NAME" > /dev/null 2>&1
@@ -23,20 +22,7 @@ git remote add --fetch origin "$remote"
 
 
 # switch into the the gh-pages branch
-if git rev-parse --verify origin/gh-pages > /dev/null 2>&1
-then
-    git checkout gh-pages
-    # delete any old site as we are going to replace it
-    # Note: this explodes if there aren't any, so moving it here for now
-    git rm -rf .
-else
-    git checkout --orphan gh-pages
-fi
-
-# copy over or recompile the new site
-cd ..
-mix docs
-cd doc
+git checkout --orphan gh-pages
 
 # stage any changes and new files
 git add -A
