@@ -91,10 +91,7 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - publish_docs:
-          filters:
-            branches:
-              only: master
+      - publish_docs
       - code-quality:
           requires:
             - build
