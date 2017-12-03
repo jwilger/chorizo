@@ -198,11 +198,4 @@ defmodule ChorizoCore do
   """
   @spec create_chore(chore, user) :: {:ok, chore} | :not_authorized
   defdelegate create_chore(chore, as_user), to: ChorizoCore.ChoreManagement
-
-  @doc """
-
-  ```
-  iex> import ChorizoCore
-  ```
-  """
 end
