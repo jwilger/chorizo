@@ -10,11 +10,6 @@ defmodule ChorizoCore do
   """
 
   @typedoc """
-  May be either the specified type or the atom `:not_authorized`
-  """
-  @type auth(type) :: type | :not_authorized
-
-  @typedoc """
   A struct representing a User
   """
   @type user :: ChorizoCore.Entities.User.t
@@ -143,7 +138,7 @@ defmodule ChorizoCore do
   :not_authorized
   ```
   """
-  @spec create_user(user, user) :: auth({:ok, user})
+  @spec create_user(user, user) :: {:ok, user} | :not_authorized
   defdelegate create_user(user, as_user), to: ChorizoCore.UserManagement
 
   @doc """
@@ -179,7 +174,7 @@ defmodule ChorizoCore do
   iex> create_chore(new_chore(name: "Foo"), anonymous_user!())
   :not_authorized
   """
-  @spec create_chore(chore, user) :: auth({:ok, chore})
+  @spec create_chore(chore, user) :: {:ok, chore} | :not_authorized
   defdelegate create_chore(chore, as_user), to: ChorizoCore.ChoreManagement
 
   @doc """
