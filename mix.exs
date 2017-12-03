@@ -14,8 +14,8 @@ defmodule ChorizoCore.Mixfile do
       source_url: "https://github.com/jwilger/chorizo_core",
       homepage_url: "http://johnwilger.com/chorizo_core",
       docs: [
-        main: "README",
-        extras: ["README.md"]
+        main: "readme",
+        extras: ["README.md": [filename: "readme", title: "README"]]
       ]
     ]
   end
