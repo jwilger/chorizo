@@ -20,8 +20,7 @@ defmodule ChorizoCore do
   @type chore :: ChorizoCore.Entities.Chore.t
 
   @doc """
-  Builds and returns a new `%ChorizoCore.Entities.User{}` with the specified
-  attributes.
+  Builds and returns a new user with the specified attributes.
 
   ```
   iex> import ChorizoCore
@@ -49,8 +48,7 @@ defmodule ChorizoCore do
   defdelegate new_user(attributes), to: ChorizoCore.Entities.User, as: :new
 
   @doc """
-  Builds and returns a new `%ChorizoCore.Entities.User{}` with default
-  attributes.
+  Builds and returns a new user with default attributes.
 
   ```
   iex> import ChorizoCore
@@ -142,6 +140,30 @@ defmodule ChorizoCore do
   defdelegate create_user(user, as_user), to: ChorizoCore.UserManagement
 
   @doc """
+  Builds and returns a new chore with the specified attributes.
+
+  ```
+  iex> import ChorizoCore
+  iex> new_chore(name: "Eat the food.")
+  %ChorizoCore.Entities.Chore{
+    name: "Eat the food."
+  }
+  ```
+
+  Invalid attributes are ignored:
+
+  ```
+  iex> import ChorizoCore
+  iex> new_chore(name: "Eat the food.", foo: :bar)
+  %ChorizoCore.Entities.Chore{
+    name: "Eat the food."
+  }
+  ```
+  """
+  @spec new_chore(keyword()) :: chore
+  defdelegate new_chore(attributes), to: ChorizoCore.Entities.Chore, as: :new
+
+  @doc """
   Creates a new chore in the system
 
   Users who are admins can create a new chore:
@@ -178,27 +200,9 @@ defmodule ChorizoCore do
   defdelegate create_chore(chore, as_user), to: ChorizoCore.ChoreManagement
 
   @doc """
-  Builds and returns a new `%ChorizoCore.Entities.Chore{}` with the specified
-  attributes.
 
   ```
   iex> import ChorizoCore
-  iex> new_chore(name: "Eat the food.")
-  %ChorizoCore.Entities.Chore{
-    name: "Eat the food."
-  }
-  ```
-
-  Invalid attributes are ignored:
-
-  ```
-  iex> import ChorizoCore
-  iex> new_chore(name: "Eat the food.", foo: :bar)
-  %ChorizoCore.Entities.Chore{
-    name: "Eat the food."
-  }
   ```
   """
-  @spec new_chore(keyword()) :: chore
-  defdelegate new_chore(attributes), to: ChorizoCore.Entities.Chore, as: :new
 end
