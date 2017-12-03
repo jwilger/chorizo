@@ -1,11 +1,11 @@
 defmodule ChorizoCore do
   @moduledoc """
-  Implements the core functionality of Chorizo
+  Public API for the ChorizoCore Application
 
   The top-level `ChorizoCore` module provides all of the functions that will be
   used by other applications. The other modules under the `ChorizoCore`
   namespace are intended to be used only within the `ChorizoCore` application.
-  (They are documented to aid the development of `ChorizoCore` itself,
+  (They are documented here, to aid the development of `ChorizoCore` itself,
   however.).
   """
 
