@@ -31,6 +31,9 @@ defmodule ChorizoCore.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:uuid, "~> 1.1"},
+      {:comeonin, "~> 4.0"},
+      {:argon2_elixir, "~> 1.2"},
       {:credo, "~> 0.8", only: :dev, runtime: false},
       {:dogma, "~> 0.1", only: :dev, runtime: false},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
