@@ -24,24 +24,31 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> new_user(username: "bob")
-  %ChorizoCore.Entities.User{
-    username: "bob",
-    anonymous: false,
-    admin: false
-  }
+  iex> user = new_user(username: "bob")
+  iex> user.username
+  "bob"
   ```
 
   Invalid attributes are ignored:
 
   ```
   iex> import ChorizoCore
-  iex> new_user(foo: "bar", username: "bob", baz: "bam")
-  %ChorizoCore.Entities.User{
-    username: "bob",
-    anonymous: false,
-    admin: false
-  }
+  iex> user = new_user(foo: "bar", username: "bob")
+  iex> user.username
+  "bob"
+  iex> Map.has_key?(user, :foo)
+  false
+  ```
+
+  It hashes the plain-text password into the password_hash and removes it:
+
+  ```
+  iex> import ChorizoCore
+  iex> user = new_user(username: "bob", password: "^L3t^ ^me^ ^1n^ ^here!^")
+  iex> user.password
+  nil
+  iex> is_binary(user.password_hash)
+  true
   ```
   """
   @spec new_user(keyword()) :: user
@@ -52,12 +59,13 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> new_user()
-  %ChorizoCore.Entities.User{
-    username: "",
-    anonymous: false,
-    admin: false
-  }
+  iex> user = new_user()
+  iex> user.username
+  ""
+  iex> user.password_hash
+  nil
+  iex> user.admin
+  false
   ```
   """
   @spec new_user() :: user
@@ -69,12 +77,13 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> anonymous_user!()
-  %ChorizoCore.Entities.User{
-    username: "",
-    anonymous: true,
-    admin: false
-  }
+  iex> user = anonymous_user!()
+  iex> user.username
+  ""
+  iex> user.anonymous
+  true
+  iex> user.admin
+  false
   """
   @spec anonymous_user!() :: user
   defdelegate anonymous_user!(), to: ChorizoCore.Entities.User, as: :anonymous!
@@ -106,12 +115,11 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> create_user(new_user(username: "bob"), anonymous_user!())
-  {:ok, %ChorizoCore.Entities.User{
-    username: "bob",
-    anonymous: false,
-    admin: true
-  }}
+  iex> {:ok, bob} = create_user(new_user(username: "bob"), anonymous_user!())
+  iex> bob.username
+  "bob"
+  iex> bob.admin
+  true
   ```
 
   Otherwise users who are admins can create new users:
@@ -119,12 +127,9 @@ defmodule ChorizoCore do
   ```
   iex> import ChorizoCore
   iex> {:ok, bob} = create_user(new_user(username: "bob"), anonymous_user!())
-  iex> create_user(new_user(username: "ann"), bob)
-  {:ok, %ChorizoCore.Entities.User{
-    username: "ann",
-    anonymous: false,
-    admin: false
-  }}
+  iex> {:ok, ann} = create_user(new_user(username: "ann"), bob)
+  iex> ann.username
+  "ann"
   ```
 
   and users who are not admins can not create new users:
@@ -138,6 +143,50 @@ defmodule ChorizoCore do
   """
   @spec create_user(user, user) :: {:ok, user} | :not_authorized
   defdelegate create_user(user, as_user), to: ChorizoCore.UserManagement
+
+  @doc """
+  Authenticates a user via username and password; returns matching user
+
+  When the username and password match an existing user, that user is returned:
+
+  ```
+  iex> import ChorizoCore
+  iex> {:ok, user} = create_user(
+  ...>   new_user(username: "bob", password: "5r*J7H9YsQ"), anonymous_user!()
+  ...> )
+  iex> {:ok, authenticated} = authenticate_user(username: "bob",
+  ...>                                          password: "5r*J7H9YsQ")
+  iex> user.id == authenticated.id
+  true
+  ```
+
+  When the username is incorrect, it returns a failure:
+
+  ```
+  iex> import ChorizoCore
+  iex> {:ok, _user} = create_user(
+  ...>   new_user(username: "bob", password: "5r*J7H9YsQ"), anonymous_user!()
+  ...> )
+  iex> {:failed, nil} = authenticate_user(username: "tom",
+  ...>                                    password: "5r*J7H9YsQ")
+  {:failed, nil}
+  ```
+
+  When the password is incorrect, it returns a failure:
+
+  ```
+  iex> import ChorizoCore
+  iex> {:ok, _user} = create_user(
+  ...>   new_user(username: "bob", password: "5r*J7H9YsQ"), anonymous_user!()
+  ...> )
+  iex> {:failed, nil} = authenticate_user(username: "bob",
+  ...>                                    password: "badpassword")
+  {:failed, nil}
+  ```
+  """
+  @spec authenticate_user(username: String.t, password: String.t)
+    :: {:ok, user} | {:failed, nil}
+  defdelegate authenticate_user(credentials), to: ChorizoCore.Authentication
 
   @doc """
   Builds and returns a new chore with the specified attributes.
@@ -198,11 +247,4 @@ defmodule ChorizoCore do
   """
   @spec create_chore(chore, user) :: {:ok, chore} | :not_authorized
   defdelegate create_chore(chore, as_user), to: ChorizoCore.ChoreManagement
-
-  @doc """
-
-  ```
-  iex> import ChorizoCore
-  ```
-  """
 end
