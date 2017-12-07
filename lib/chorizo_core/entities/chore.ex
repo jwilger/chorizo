@@ -1,5 +1,6 @@
 defmodule ChorizoCore.Entities.Chore do
   @moduledoc """
+  Provides functions for working with chore data
   """
 
   alias __MODULE__

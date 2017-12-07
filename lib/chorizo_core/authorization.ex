@@ -1,6 +1,7 @@
 defmodule ChorizoCore.Authorization do
   @moduledoc """
-  Used to determine whether a particular user has a named permission
+  This module contains many implementations of `authorized/3`, which are used to
+  determine if a given user has a given permission.
   """
 
   defmodule InvalidPermissionError do

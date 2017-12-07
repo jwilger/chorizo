@@ -1,5 +1,6 @@
 defmodule ChorizoCore.Entities.User do
   @moduledoc """
+  Provides functions for working with user data
   """
 
   alias __MODULE__
