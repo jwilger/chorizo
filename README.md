@@ -1,5 +1,10 @@
 # ChorizoCore
 
+* [View sourcecode on GitHub](https://github.com/jwilger/chorizo_core)
+* [View API documentation](http://johnwilger.com/chorizo_core) for the master
+  branch
+* [View build status on CircleCI](https://circleci.com/gh/jwilger/chorizo_core)
+
 Implements the core functionality for Chorizo, a gamified family
 chore-tracker that rewards initiative and cooperation. The top-level
 `ChorizoCore` module defines the public API for this Elixir application.
