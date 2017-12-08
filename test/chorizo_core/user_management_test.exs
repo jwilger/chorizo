@@ -32,7 +32,7 @@ defmodule ChorizoCore.UserManagementTest do
       users_repo
       |> stub(:insert, fn u -> {:ok, u} end)
 
-     as_user = User.new(username: "bob")
+      as_user = User.new(username: "bob")
 
       auth_mod
       |> expect(:authorized?, fn :manage_users, ^as_user, ^users_repo ->
