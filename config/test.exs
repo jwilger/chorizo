@@ -7,4 +7,5 @@ config :argon2_elixir,
 config :chorizo_core, ChorizoCore.Repositories.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "chorizo_test",
-  hostname: "localhost"
+  hostname: "localhost",
+  username: "chorizo"
