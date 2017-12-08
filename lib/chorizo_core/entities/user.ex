@@ -3,6 +3,8 @@ defmodule ChorizoCore.Entities.User do
   Provides functions for working with user data
   """
 
+  use ChorizoCore.Entities.Schema
+
   alias __MODULE__
   alias ChorizoCore.Authentication.Hasher
   alias ChorizoCore.Entities.UUID
@@ -11,20 +13,20 @@ defmodule ChorizoCore.Entities.User do
   Contains the data related to an individual user of the system
   """
   @type t() :: %User{
-    id: String.t,
-    username: String.t,
-    anonymous: boolean(),
-    admin: boolean(),
+    id: String.t | nil,
+    username: String.t | nil,
+    anonymous: boolean,
+    admin: boolean,
+    password: String.t | nil,
     password_hash: String.t | nil
   }
-  defstruct [
-    id: nil,
-    username: "",
-    anonymous: false,
-    admin: false,
-    password: nil,
-    password_hash: nil
-  ]
+  schema "users" do
+    field :username, :string
+    field :anonymous, :boolean, default: false, virtual: true
+    field :admin, :boolean, default: false
+    field :password, :string, virtual: true
+    field :password_hash, :string
+  end
 
   @doc """
   Builds and returns an anonymous `%ChorizoCore.Entities.User{}`

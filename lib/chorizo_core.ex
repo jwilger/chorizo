@@ -61,7 +61,7 @@ defmodule ChorizoCore do
   iex> import ChorizoCore
   iex> user = new_user()
   iex> user.username
-  ""
+  nil
   iex> user.password_hash
   nil
   iex> user.admin
@@ -79,7 +79,7 @@ defmodule ChorizoCore do
   iex> import ChorizoCore
   iex> user = anonymous_user!()
   iex> user.username
-  ""
+  nil
   iex> user.anonymous
   true
   iex> user.admin

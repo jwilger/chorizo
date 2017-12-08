@@ -21,6 +21,9 @@ use Mix.Config
 #     config :logger, level: :info
 
 config :chorizo_core, ecto_repos: [ChorizoCore.Repositories.Repo]
+config :chorizo_core, ChorizoCore.Repositories.Repo,
+  migration_primary_key: [type: :binary_id],
+  migration_timestamps: [type: :utc_datetime]
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
