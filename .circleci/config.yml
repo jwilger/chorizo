@@ -1,13 +1,12 @@
-# Elixir CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-elixir/ for more details
+job_defaults: &job_defaults
+  docker:
+    - image: circleci/elixir:1.5.2
+      working_directory: ~/repo
+
 version: 2
 jobs:
   build:
-    docker:
-      # specify the version here
-      - image: circleci/elixir:1.5.2
-    working_directory: ~/repo
+    <<: *job_defaults
     steps:
       - checkout
       - restore_cache:
@@ -28,93 +27,47 @@ jobs:
             - _build
             - deps
             - ~/.mix
+      - persist_to_workspace:
+          root: ..
+          paths:
+            - .
+  test:
+    <<: *job_defaults
+    steps:
+      - attach_workspace:
+          at: ..
       - run: mix test
       - run: mix docs
   publish_docs:
-    docker:
-      # specify the version here
-      - image: circleci/elixir:1.5.2
-    working_directory: ~/repo
+    <<: *job_defaults
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependency-cache-{{ checksum "mix.lock" }}
-            - v1-dependency-cache
-      - run: mix local.hex --force
-      - run: mix deps.get
-      - run: mix deps.compile
-      - run: mix compile
-      - run:
-          command: mix compile
-          environment:
-            MIX_ENV: test
-      - save_cache:
-          key: v1-dependency-cache-{{ checksum "mix.lock" }}
-          paths:
-            - _build
-            - deps
-            - ~/.mix
+      - attach_workspace:
+          at: ..
       - run: scripts/update_master_documentation.sh
   code-quality:
-    docker:
-      # specify the version here
-      - image: circleci/elixir:1.5.2
-    working_directory: ~/repo
+    <<: *job_defaults
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependency-cache-{{ checksum "mix.lock" }}
-            - v1-dependency-cache
-      - run: mix local.hex --force
-      - run: mix deps.get
-      - run: mix deps.compile
-      - run: mix compile
-      - run:
-          command: mix compile
-          environment:
-            MIX_ENV: test
-      - save_cache:
-          key: v1-dependency-cache-{{ checksum "mix.lock" }}
-          paths:
-            - _build
-            - deps
-            - ~/.mix
+      - attach_workspace:
+          at: ..
       - run: mix credo
       - run: mix dogma
   dialyzer:
-    docker:
-      # specify the version here
-      - image: circleci/elixir:1.5.2
-    working_directory: ~/repo
+    <<: *job_defaults
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependency-cache-{{ checksum "mix.lock" }}
-            - v1-dependency-cache
-      - run: mix local.hex --force
-      - run: mix deps.get
-      - run: mix deps.compile
-      - run: mix compile
-      - run:
-          command: mix compile
-          environment:
-            MIX_ENV: test
-      - save_cache:
-          key: v1-dependency-cache-{{ checksum "mix.lock" }}
-          paths:
-            - _build
-            - deps
-            - ~/.mix
+      - attach_workspace:
+          at: ..
       - run: mix dialyzer
 workflows:
   version: 2
   build-deploy:
     jobs:
       - build
+      - test:
+          requires:
+            - build
       - publish_docs:
+          requires:
+            - build
           filters:
             branches:
               only: master
@@ -124,3 +77,6 @@ workflows:
       - dialyzer:
           requires:
             - build
+          filters:
+            branches:
+              only: master
