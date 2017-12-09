@@ -74,6 +74,10 @@ defmodule ChorizoCore.UserManagementTest do
       create_user(user, %User{})
     end
 
+    test "new user can also be passed as a User struct" do
+      assert {:ok, _} = create_user(%User{username: "bob"}, %User{})
+    end
+
     test "new user is returned" do
       user = %{username: "bob"}
       {:ok, %{username: "bob"}} = create_user(user, %User{})
