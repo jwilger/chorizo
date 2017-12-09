@@ -44,8 +44,7 @@ defmodule ChorizoCore.Authorization do
   def authorized?(permission, user, users_repo \\ Users)
 
   def authorized?(:manage_users, %User{anonymous: true}, users_repo) do
-    {:ok, count} = users_repo.count()
-    count == 0
+    0 == users_repo.count()
   end
   def authorized?(_, %User{anonymous: true}, _), do: false
 

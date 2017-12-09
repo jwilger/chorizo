@@ -4,6 +4,7 @@ defmodule ChorizoCore.Entities.User do
   """
 
   use ChorizoCore.Entities.Schema
+  import Ecto.Changeset
 
   alias __MODULE__
   alias ChorizoCore.Authentication.Hasher
@@ -12,7 +13,7 @@ defmodule ChorizoCore.Entities.User do
   @typedoc """
   Contains the data related to an individual user of the system
   """
-  @type t() :: %User{
+  @type t() :: %__MODULE__{
     id: String.t | nil,
     username: String.t | nil,
     anonymous: boolean,
@@ -26,63 +27,49 @@ defmodule ChorizoCore.Entities.User do
     field :admin, :boolean, default: false
     field :password, :string, virtual: true
     field :password_hash, :string
+    timestamps
   end
 
   @doc """
   Builds and returns an anonymous `%ChorizoCore.Entities.User{}`
   """
   @spec anonymous!() :: t()
-  def anonymous!, do: new(anonymous: true)
+  def anonymous!, do: %__MODULE__{anonymous: true}
 
   @doc """
   Determines if the User is anonymous
   """
   @spec is_anonymous(t) :: boolean
-  def is_anonymous(%User{anonymous: true}), do: true
-  def is_anonymous(%User{anonymous: false}), do: false
-
+  def is_anonymous(%__MODULE__{anonymous: true}), do: true
+  def is_anonymous(%__MODULE__{anonymous: false}), do: false
 
   @doc """
-  Builds and returns a `%ChorizoCore.Entities.User{}` from `propterties`
+  Builds an `Ecto.Changeset` for the user data
   """
-  @spec new(keyword()) :: t()
-  def new(properties \\ []) when is_list(properties) do
-    properties
-    |> Enum.into(%{})
-    |> ensure_id_present
-    |> hash_password
-    |> (&(struct(__MODULE__, &1))).()
-  end
+  @spec changeset(%{}) :: Ecto.Changeset.t
+  def changeset(%{} = params), do: changeset(%__MODULE__{}, params)
 
-  defp ensure_id_present(%{id: id} = properties)
-  when is_binary(id), do: properties
+  @doc """
+  Builds an `Ecto.Changeset` for the user data
 
-  defp ensure_id_present(%{id_generator: id_generator} = properties) do
-    id = id_generator.uuidv4
-    Map.put(properties, :id, id)
-  end
-
-  defp ensure_id_present(properties) do
-    properties
-    |> Map.put(:id_generator, UUID)
-    |> ensure_id_present
-  end
-
-  defp hash_password(%{password: password,
-    password_hasher: password_hasher} = properties)
-  do
-    hash = password_hasher.hashpwsalt(password)
-    properties
-    |> Map.delete(:password)
-    |> Map.put(:password_hash, hash)
-  end
-
-  defp hash_password(%{password: password} = properties)
-  when is_binary(password) do
-    properties
-    |> Map.put(:password_hasher, Hasher)
+  Note that if a `:password` key is present in the params, its value will be
+  hashed with `ChorizoCore.Authentication.Hasher.hashpwsalt/1` and stored in the
+  `:password_hash` key. The `:password` key will be removed.
+  ```
+  """
+  @spec changeset(__MODULE__.t, %{}) :: Ecto.Changeset.t
+  def changeset(%__MODULE__{} = user, params \\ %{}) do
+    user
+    |> cast(params, [:username, :admin, :password])
     |> hash_password
   end
 
-  defp hash_password(properties), do: properties
+  defp hash_password(
+    %Ecto.Changeset{valid?: true, changes: %{password: pass}} = changeset
+  ) do
+    changeset
+    |> put_change(:password_hash, Hasher.hashpwsalt(pass))
+    |> delete_change(:password)
+  end
+  defp hash_password(changeset), do: changeset
 end

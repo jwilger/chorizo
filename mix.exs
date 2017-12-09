@@ -8,6 +8,7 @@ defmodule ChorizoCore.Mixfile do
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),
+      aliases: aliases(),
 
       # Docs
       name: "ChorizoCore",
@@ -41,6 +42,14 @@ defmodule ChorizoCore.Mixfile do
       {:mox, "~> 0.3", only: :test},
       {:postgrex, "~> 0.11"},
       {:uuid, "~> 1.1"},
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "test":       ["ecto.reset", "test"]
     ]
   end
 end

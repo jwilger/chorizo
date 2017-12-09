@@ -3,7 +3,8 @@ defmodule ChorizoCoreTest do
   doctest ChorizoCore
 
   setup do
-    ChorizoCore.Repositories.Users.reset()
-    on_exit &ChorizoCore.Repositories.Users.reset/0
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ChorizoCore.Repositories.Repo)
+    Ecto.Adapters.SQL.Sandbox.mode(ChorizoCore.Repositories.Repo,
+                                   {:shared, self()})
   end
 end

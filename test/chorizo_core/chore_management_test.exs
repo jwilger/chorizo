@@ -35,7 +35,7 @@ defmodule ChorizoCore.ChoreManagementTest do
   describe "create_chore/2" do
     test "checks that the user has the :manage_chores permission",
     %{auth_mod: auth_mod, users_repo: users_repo} do
-      user = User.new
+      user = %User{}
       auth_mod
       |> expect(:authorized?, fn :manage_chores, ^user, ^users_repo ->
         false
@@ -58,12 +58,12 @@ defmodule ChorizoCore.ChoreManagementTest do
       chore = Chore.new(name: "foo")
       chores_repo
       |> expect(:insert, fn ^chore -> {:ok, chore} end)
-      create_chore(chore, User.new)
+      create_chore(chore, %User{})
     end
 
     test "returns the inserted chore" do
       chore = Chore.new(name: "foo")
-      assert {:ok, ^chore} = create_chore(chore, User.new)
+      assert {:ok, ^chore} = create_chore(chore, %User{})
     end
   end
 
@@ -77,11 +77,11 @@ defmodule ChorizoCore.ChoreManagementTest do
     test "does not insert the chore" do
       # would get an unexpected function call error if we tried to call insert/1
       # on the mock
-      create_chore(Chore.new, User.new)
+      create_chore(Chore.new, %User{})
     end
 
     test "returns :not_authorized" do
-      assert :not_authorized = create_chore(Chore.new, User.new)
+      assert :not_authorized = create_chore(Chore.new, %User{})
     end
   end
 end

@@ -12,18 +12,18 @@ defmodule ChorizoCore.AuthorizationTest do
 
   setup_all do
     defmock(ChorizoCore.AuthorizationTest.MockUsers,
-                for: ChorizoCore.Repositories.API)
+                for: ChorizoCore.Repositories.Repo)
     {:ok, users_repo: MockUsers}
   end
 
   describe "authorized?/3 when called with an invalid permission" do
-    test "it raises an InvalidPermissionError", %{users_repo: users_repo} do
+    test "it raises an InvalidPermissionError" do
       assert_raise(
         ChorizoCore.Authorization.InvalidPermissionError,
         ~r{:this_is_clearly_going_to_be_invalid},
         fn ->
           authorized?(:this_is_clearly_going_to_be_invalid,
-                      User.new, users_repo)
+                      %User{}, MockUsers)
         end
       )
     end
@@ -31,69 +31,61 @@ defmodule ChorizoCore.AuthorizationTest do
 
   describe "authorized?/3 for :manage_users" do
     test "is true when the user is anonymous and there are no users in " <>
-      "the repository",
-    %{users_repo: repo} do
-      repo
-      |> expect(:count, fn -> {:ok, 0} end)
-      assert authorized?(:manage_users, User.anonymous!, repo)
+      "the repository" do
+      MockUsers
+      |> expect(:count, fn -> 0 end)
+      assert authorized?(:manage_users, User.anonymous!, MockUsers)
     end
 
     test "is false when the user is anonymous and there is a user in the " <>
-      "repository already",
-    %{users_repo: repo} do
-      repo
-      |> expect(:count, fn -> {:ok, 1} end)
-      refute authorized?(:manage_users, User.anonymous!, repo)
+      "repository already" do
+      MockUsers
+      |> expect(:count, fn -> 1 end)
+      refute authorized?(:manage_users, User.anonymous!, MockUsers)
     end
 
-    test "is true when the user is an admin",
-    %{users_repo: repo} do
-      admin = User.new(username: "admin", admin: true)
-      repo
+    test "is true when the user is an admin" do
+      admin = %User{username: "admin", admin: true}
+      MockUsers
       |> expect(:first, fn [username: "admin"] -> {:ok, admin} end)
-      assert authorized?(:manage_users, admin, repo)
+      assert authorized?(:manage_users, admin, MockUsers)
     end
 
-    test "is false when the user is not an admin",
-    %{users_repo: repo} do
-      normal = User.new(username: "normal")
-      repo
+    test "is false when the user is not an admin" do
+      normal = %User{username: "normal"}
+      MockUsers
       |> expect(:first, fn [username: "normal"] -> {:ok, normal} end)
-      refute authorized?(:manage_users, normal, repo)
+      refute authorized?(:manage_users, normal, MockUsers)
     end
 
-    test "is false when the user does not exist",
-    %{users_repo: repo} do
-      nope = User.new(username: "nope", admin: true)
-      repo
+    test "is false when the user does not exist" do
+      nope = %User{username: "nope", admin: true}
+      MockUsers
       |> expect(:first, fn [username: "nope"] -> {:not_found, nil} end)
-      refute authorized?(:manage_users, nope, repo)
+      refute authorized?(:manage_users, nope, MockUsers)
     end
   end
 
   describe "authorized?/3 for :manage_chores" do
-    test "is true when the user is an admin",
-    %{users_repo: repo} do
-      admin = User.new(username: "admin", admin: true)
-      repo
+    test "is true when the user is an admin" do
+      admin = %User{username: "admin", admin: true}
+      MockUsers
       |> expect(:first, fn [username: "admin"] -> {:ok, admin} end)
-      assert authorized?(:manage_chores, admin, repo)
+      assert authorized?(:manage_chores, admin, MockUsers)
     end
 
-    test "is false when the user is not an admin",
-    %{users_repo: repo} do
-      normal = User.new(username: "normal")
-      repo
+    test "is false when the user is not an admin" do
+      normal = %User{username: "normal"}
+      MockUsers
       |> expect(:first, fn [username: "normal"] -> {:ok, normal} end)
-      refute authorized?(:manage_chores, normal, repo)
+      refute authorized?(:manage_chores, normal, MockUsers)
     end
 
-    test "is false when the user does not exist",
-    %{users_repo: repo} do
-      nope = User.new(username: "nope", admin: true)
-      repo
+    test "is false when the user does not exist" do
+      nope = %User{username: "nope", admin: true}
+      MockUsers
       |> expect(:first, fn [username: "nope"] -> {:not_found, nil} end)
-      refute authorized?(:manage_chores, nope, repo)
+      refute authorized?(:manage_chores, nope, MockUsers)
     end
 
     test "is false when the user is anonymous" do

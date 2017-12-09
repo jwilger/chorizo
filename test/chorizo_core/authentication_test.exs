@@ -81,7 +81,7 @@ defmodule ChorizoCore.AuthenticationTest do
   end
 
   defp matching_user_found(_context) do
-    user = User.new
+    user = %User{}
     MockUsers
     |> stub(:first, fn _ -> {:ok, user} end)
     [user: user]
