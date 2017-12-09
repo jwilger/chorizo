@@ -4,15 +4,16 @@ defmodule ChorizoCore.AuthorizationTest do
   doctest ChorizoCore.Authorization
 
   alias ChorizoCore.{Entities.User, Authorization}
+  alias ChorizoCore.AuthorizationTest.MockUsers
 
   defdelegate authorized?(permission, user, users_repository), to: Authorization
 
   setup :verify_on_exit!
 
   setup_all do
-    defmock(ChorizoCore.Repositories.Users.Mock,
+    defmock(ChorizoCore.AuthorizationTest.MockUsers,
                 for: ChorizoCore.Repositories.API)
-    {:ok, users_repo: ChorizoCore.Repositories.Users.Mock}
+    {:ok, users_repo: MockUsers}
   end
 
   describe "authorized?/3 when called with an invalid permission" do
@@ -93,6 +94,10 @@ defmodule ChorizoCore.AuthorizationTest do
       repo
       |> expect(:first, fn [username: "nope"] -> {:not_found, nil} end)
       refute authorized?(:manage_chores, nope, repo)
+    end
+
+    test "is false when the user is anonymous" do
+      refute authorized?(:manage_chores, User.anonymous!, MockUsers)
     end
   end
 end

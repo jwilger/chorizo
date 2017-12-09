@@ -42,16 +42,21 @@ defmodule ChorizoCore.Authorization do
   """
   @spec authorized?(permission, User.t, Users.t) :: boolean
   def authorized?(permission, user, users_repo \\ Users)
+
   def authorized?(:manage_users, %User{anonymous: true}, users_repo) do
     {:ok, count} = users_repo.count()
     count == 0
   end
+  def authorized?(_, %User{anonymous: true}, _), do: false
+
   def authorized?(:manage_users, %User{} = user, users_repo) do
     find_and_authorize(users_repo, user, &(&1.admin))
   end
+
   def authorized?(:manage_chores, %User{} = user, users_repo) do
     find_and_authorize(users_repo, user, &(&1.admin))
   end
+
   def authorized?(permission, _user, _users_repo) do
     raise InvalidPermissionError, permission
   end
