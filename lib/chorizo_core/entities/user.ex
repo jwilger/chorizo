@@ -6,9 +6,7 @@ defmodule ChorizoCore.Entities.User do
   use ChorizoCore.Entities.Schema
   import Ecto.Changeset
 
-  alias __MODULE__
   alias ChorizoCore.Authentication.Hasher
-  alias ChorizoCore.Entities.UUID
 
   @typedoc """
   Contains the data related to an individual user of the system
@@ -27,7 +25,7 @@ defmodule ChorizoCore.Entities.User do
     field :admin, :boolean, default: false
     field :password, :string, virtual: true
     field :password_hash, :string
-    timestamps
+    timestamps()
   end
 
   @doc """

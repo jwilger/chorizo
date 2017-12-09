@@ -49,7 +49,8 @@ defmodule ChorizoCore.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test":       ["ecto.reset", "test"]
+      "test":       ["ecto.reset", "test"],
+      "compile":    ["compile --warnings-as-errors"]
     ]
   end
 end
