@@ -9,3 +9,5 @@ config :chorizo_core, ChorizoCore.Repositories.Repo,
   database: "chorizo_test",
   hostname: "localhost",
   username: "chorizo"
+
+config :logger, level: :info
