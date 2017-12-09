@@ -20,58 +20,6 @@ defmodule ChorizoCore do
   @type chore :: ChorizoCore.Entities.Chore.t
 
   @doc """
-  Builds and returns a new user with the specified attributes.
-
-  ```
-  iex> import ChorizoCore
-  iex> user = new_user(username: "bob")
-  iex> user.username
-  "bob"
-  ```
-
-  Invalid attributes are ignored:
-
-  ```
-  iex> import ChorizoCore
-  iex> user = new_user(foo: "bar", username: "bob")
-  iex> user.username
-  "bob"
-  iex> Map.has_key?(user, :foo)
-  false
-  ```
-
-  It hashes the plain-text password into the password_hash and removes it:
-
-  ```
-  iex> import ChorizoCore
-  iex> user = new_user(username: "bob", password: "^L3t^ ^me^ ^1n^ ^here!^")
-  iex> user.password
-  nil
-  iex> is_binary(user.password_hash)
-  true
-  ```
-  """
-  @spec new_user(keyword()) :: user
-  defdelegate new_user(attributes), to: ChorizoCore.Entities.User, as: :new
-
-  @doc """
-  Builds and returns a new user with default attributes.
-
-  ```
-  iex> import ChorizoCore
-  iex> user = new_user()
-  iex> user.username
-  ""
-  iex> user.password_hash
-  nil
-  iex> user.admin
-  false
-  ```
-  """
-  @spec new_user() :: user
-  defdelegate new_user(), to: ChorizoCore.Entities.User, as: :new
-
-  @doc """
   Returns an anonymous user that should be used when no user has been
   authenticated.
 
@@ -79,7 +27,7 @@ defmodule ChorizoCore do
   iex> import ChorizoCore
   iex> user = anonymous_user!()
   iex> user.username
-  ""
+  nil
   iex> user.anonymous
   true
   iex> user.admin
@@ -93,7 +41,7 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> user = new_user()
+  iex> user = %ChorizoCore.Entities.User{}
   iex> is_anonymous(user)
   false
   ```
@@ -111,11 +59,12 @@ defmodule ChorizoCore do
   @doc """
   Creates new users in the system
 
-  When no users yet exist, the anonymous user can create a new user:
+  When no users yet exist, the anonymous user can create a new user, and that
+  user becomes the first admin:
 
   ```
   iex> import ChorizoCore
-  iex> {:ok, bob} = create_user(new_user(username: "bob"), anonymous_user!())
+  iex> {:ok, bob} = create_user(%{username: "bob"}, anonymous_user!())
   iex> bob.username
   "bob"
   iex> bob.admin
@@ -126,8 +75,8 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> {:ok, bob} = create_user(new_user(username: "bob"), anonymous_user!())
-  iex> {:ok, ann} = create_user(new_user(username: "ann"), bob)
+  iex> {:ok, bob} = create_user(%{username: "bob"}, anonymous_user!())
+  iex> {:ok, ann} = create_user(%{username: "ann"}, bob)
   iex> ann.username
   "ann"
   ```
@@ -135,13 +84,13 @@ defmodule ChorizoCore do
   and users who are not admins can not create new users:
   ```
   iex> import ChorizoCore
-  iex> {:ok, bob} = create_user(new_user(username: "bob"), anonymous_user!())
-  iex> {:ok, ann} = create_user(new_user(username: "ann"), bob)
-  iex> create_user(new_user(username: "foo"), ann)
+  iex> {:ok, bob} = create_user(%{username: "bob"}, anonymous_user!())
+  iex> {:ok, ann} = create_user(%{username: "ann"}, bob)
+  iex> create_user(%{username: "foo"}, ann)
   :not_authorized
   ```
   """
-  @spec create_user(user, user) :: {:ok, user} | :not_authorized
+  @spec create_user(user | map, user) :: {:ok, user} | :not_authorized
   defdelegate create_user(user, as_user), to: ChorizoCore.UserManagement
 
   @doc """
@@ -152,7 +101,7 @@ defmodule ChorizoCore do
   ```
   iex> import ChorizoCore
   iex> {:ok, user} = create_user(
-  ...>   new_user(username: "bob", password: "5r*J7H9YsQ"), anonymous_user!()
+  ...>   %{username: "bob", password: "5r*J7H9YsQ"}, anonymous_user!()
   ...> )
   iex> {:ok, authenticated} = authenticate_user(username: "bob",
   ...>                                          password: "5r*J7H9YsQ")
@@ -165,7 +114,7 @@ defmodule ChorizoCore do
   ```
   iex> import ChorizoCore
   iex> {:ok, _user} = create_user(
-  ...>   new_user(username: "bob", password: "5r*J7H9YsQ"), anonymous_user!()
+  ...>   %{username: "bob", password: "5r*J7H9YsQ"}, anonymous_user!()
   ...> )
   iex> {:failed, nil} = authenticate_user(username: "tom",
   ...>                                    password: "5r*J7H9YsQ")
@@ -177,7 +126,7 @@ defmodule ChorizoCore do
   ```
   iex> import ChorizoCore
   iex> {:ok, _user} = create_user(
-  ...>   new_user(username: "bob", password: "5r*J7H9YsQ"), anonymous_user!()
+  ...>   %{username: "bob", password: "5r*J7H9YsQ"}, anonymous_user!()
   ...> )
   iex> {:failed, nil} = authenticate_user(username: "bob",
   ...>                                    password: "badpassword")
@@ -219,8 +168,8 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> {:ok, admin} = create_user(new_user(username: "admin", admin: true),
-  iex>                                     anonymous_user!())
+  iex> {:ok, admin} = create_user(%{username: "admin", admin: true},
+  iex>                            anonymous_user!())
   iex> create_chore(new_chore(name: "Foo"), admin)
   {:ok, %ChorizoCore.Entities.Chore{
     name: "Foo"
@@ -231,10 +180,9 @@ defmodule ChorizoCore do
 
   ```
   iex> import ChorizoCore
-  iex> {:ok, admin} = create_user(new_user(username: "admin", admin: true),
-  iex>                                     anonymous_user!())
-  iex> {:ok, user} = create_user(new_user(username: "non_admin", admin: false),
-  iex>                                    admin)
+  iex> {:ok, admin} = create_user(%{username: "admin", admin: true},
+  iex>                            anonymous_user!())
+  iex> {:ok, user} = create_user(%{username: "non_admin", admin: false}, admin)
   iex> create_chore(new_chore(name: "Foo"), user)
   :not_authorized
   ```

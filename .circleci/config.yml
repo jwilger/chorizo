@@ -1,12 +1,18 @@
 job_defaults: &job_defaults
   docker:
     - image: circleci/elixir:1.5.2
-      working_directory: ~/repo
+  working_directory: ~/repo
 
 version: 2
 jobs:
   build:
     <<: *job_defaults
+    docker:
+      - image: circleci/elixir:1.5.2
+      - image: circleci/postgres:9.6
+        environment:
+        - POSTGRES_USER=chorizo
+        - POSTGRES_DB=chorizo_test
     steps:
       - checkout
       - restore_cache:
@@ -14,6 +20,7 @@ jobs:
             - v1-dependency-cache-{{ checksum "mix.lock" }}
             - v1-dependency-cache
       - run: mix local.hex --force
+      - run: mix local.rebar --force
       - run: mix deps.get
       - run: mix deps.compile
       - run: mix compile
@@ -27,17 +34,14 @@ jobs:
             - _build
             - deps
             - ~/.mix
+      - run: mix ecto.create
+      - run: mix ecto.migrate
+      - run: mix test
+      - run: mix docs
       - persist_to_workspace:
           root: ..
           paths:
             - .
-  test:
-    <<: *job_defaults
-    steps:
-      - attach_workspace:
-          at: ..
-      - run: mix test
-      - run: mix docs
   publish_docs:
     <<: *job_defaults
     steps:
@@ -62,9 +66,6 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - test:
-          requires:
-            - build
       - publish_docs:
           requires:
             - build
