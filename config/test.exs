@@ -8,6 +8,7 @@ config :chorizo_core, ChorizoCore.Repositories.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "chorizo_test",
   hostname: "localhost",
-  username: "chorizo"
+  username: "chorizo",
+  pool: Ecto.Adapters.SQL.Sandbox
 
 config :logger, level: :info
