@@ -90,7 +90,7 @@ defmodule ChorizoCore do
   :not_authorized
   ```
   """
-  @spec create_user(user, user) :: {:ok, user} | :not_authorized
+  @spec create_user(user | map, user) :: {:ok, user} | :not_authorized
   defdelegate create_user(user, as_user), to: ChorizoCore.UserManagement
 
   @doc """
