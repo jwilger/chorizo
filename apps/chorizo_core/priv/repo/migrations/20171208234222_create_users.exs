@@ -8,6 +8,5 @@ defmodule ChorizoCore.Repositories.Repo.Migrations.CreateUsers do
       add :admin, :boolean, default: false, null: false
       timestamps()
     end
-    unique_index :users, :username
   end
 end

@@ -9,6 +9,15 @@ defmodule ChorizoCore.Repositories.UsersTest do
                                    {:shared, self()})
   end
 
+  describe "insert/1" do
+    test "username must be unique" do
+      Users.insert(User.changeset(%{username: "bob"}))
+      {:error, %{errors: errors}} =
+        Users.insert(User.changeset(%{username: "bob"}))
+      assert {"has already been taken", _} = Keyword.get(errors, :username)
+    end
+  end
+
   describe "count/0" do
     test "returns the number of users in the repository" do
       assert 0 = Users.count()

@@ -59,6 +59,7 @@ defmodule ChorizoCore.Entities.User do
   def changeset(%__MODULE__{} = user, params \\ %{}) do
     user
     |> cast(params, [:username, :admin, :password])
+    |> unique_constraint(:username)
     |> hash_password
   end
 
