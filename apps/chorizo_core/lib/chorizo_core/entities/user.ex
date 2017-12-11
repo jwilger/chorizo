@@ -61,7 +61,7 @@ defmodule ChorizoCore.Entities.User do
     |> cast(params, [:username, :admin, :password])
     |> hash_password
     |> validate_required([:username])
-    |> validate_inclusion(:anonymous, [false])
+    |> validate_confirmation(:password)
     |> unique_constraint(:username)
   end
 
