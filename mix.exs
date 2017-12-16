@@ -1,17 +1,15 @@
-defmodule ChorizoCore.Mixfile do
+defmodule Chorizo.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :chorizo_core,
-      version: "0.1.0-dev",
-      elixir: "~> 1.5",
+      apps_path: "apps",
       start_permanent: Mix.env == :prod,
       deps: deps(),
       aliases: aliases(),
 
       # Docs
-      name: "ChorizoCore",
+      name: "Chorizo",
       source_url: "https://github.com/jwilger/chorizo_core",
       homepage_url: "http://johnwilger.com/chorizo_core",
       docs: [
@@ -21,35 +19,22 @@ defmodule ChorizoCore.Mixfile do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      extra_applications: [:logger],
-      mod: {ChorizoCore.Application, []}
-    ]
-  end
-
-  # Run "mix help deps" to learn about dependencies.
+  # Dependencies listed here are available only for this
+  # project and cannot be accessed from applications inside
+  # the apps folder.
+  #
+  # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:argon2_elixir, "~> 1.2"},
-      {:comeonin, "~> 4.0"},
       {:credo, "~> 0.8", only: :dev, runtime: false},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:dogma, "~> 0.1", only: :dev, runtime: false},
-      {:ecto, "~> 2.0"},
       {:ex_doc, "~> 0.16", only: :dev},
-      {:mox, "~> 0.3", only: :test},
-      {:postgrex, "~> 0.11"},
-      {:uuid, "~> 1.1"},
     ]
   end
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test":       ["ecto.reset", "test"],
       "compile":    ["compile --warnings-as-errors"]
     ]
   end

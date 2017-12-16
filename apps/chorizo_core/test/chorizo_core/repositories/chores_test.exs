@@ -39,13 +39,8 @@ defmodule ChorizoCore.Repositories.ChoresTest do
       assert {:not_found, nil} = Chores.first(name: "wash dishes")
     end
 
-    # TODO: uncomment and implement once there are more Chore attributes
-    #
-    # test "returns :not_found if only some attributes match" do
-    #   Chores.insert(Chore.new(name: "wash dishes", admin: true))
-    #   assert {:not_found, nil} =
-    #     Chores.first(name: "wash dishes", admin: "false")
-    # end
+    @tag :pending # Implement once there are more chore attributes
+    test "returns :not_found if only some attributes match"
   end
 
   describe "count/2" do
