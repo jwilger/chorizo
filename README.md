@@ -1,4 +1,3 @@
 # Chorizo
 
-**TODO: Add description**
-
+A gamified family chore-tracking application
