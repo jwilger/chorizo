@@ -6,8 +6,7 @@ defmodule ChorizoCore.Entities.UserTest do
 
   describe "changeset/2" do
     defp valid_user_data(%{} = changes) do
-      %{username: "bob #{System.unique_integer}"}
-      |> Map.merge(changes)
+      Map.merge(%{username: "bob #{System.unique_integer}"}, changes)
     end
 
     test "password is hashed when present" do
