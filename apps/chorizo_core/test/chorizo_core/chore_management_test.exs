@@ -42,8 +42,7 @@ defmodule ChorizoCore.ChoreManagementTest do
   describe "create_chore/3" do
     test "checks that the user has the :manage_chores permission" do
       as_user = %User{}
-      MockAuth
-      |> expect(:authorized?, fn :manage_chores, ^as_user, MockUsers ->
+      expect(MockAuth, :authorized?, fn :manage_chores, ^as_user, MockUsers ->
         false
       end)
       create_chore(%{}, as_user)
@@ -61,8 +60,7 @@ defmodule ChorizoCore.ChoreManagementTest do
 
     test "inserts the chore into the chores repo" do
       chore = %{name: "foo"}
-      MockChores
-      |> expect(:insert, fn %{changes: %{name: "foo"} = c} -> {:ok, c} end)
+      expect(MockChores, :insert, fn %{changes: %{name: "foo"} = c} -> {:ok, c} end)
       create_chore(chore, %User{})
     end
 
