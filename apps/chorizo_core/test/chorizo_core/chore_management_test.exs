@@ -60,7 +60,9 @@ defmodule ChorizoCore.ChoreManagementTest do
 
     test "inserts the chore into the chores repo" do
       chore = %{name: "foo"}
-      expect(MockChores, :insert, fn %{changes: %{name: "foo"} = c} -> {:ok, c} end)
+      expect(MockChores, :insert, fn %{changes: %{name: "foo"} = c} ->
+        {:ok, c}
+      end)
       create_chore(chore, %User{})
     end
 
