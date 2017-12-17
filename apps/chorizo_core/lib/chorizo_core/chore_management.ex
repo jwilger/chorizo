@@ -14,7 +14,8 @@ defmodule ChorizoCore.ChoreManagement do
 
   Requires the `:manage_chores` permission.
   """
-  @spec create_chore(Chore.t, User.t) :: {:ok, Chore.t} | :not_authorized
+  @spec create_chore(chore :: Chore.t | map, as_user :: User.t)
+    :: {:ok, Chore.t} | {:error, Ecto.Changeset.t} | :not_authorized
   def create_chore(chore, user),
     do: create_chore(chore, user, chores_repo: Chores, users_repo: Users,
                      auth_mod: Authorization)
@@ -25,17 +26,27 @@ defmodule ChorizoCore.ChoreManagement do
   This version allows explicit dependencies to be passed in. Prefer the use of
   `create_chore/2` over `create_chore/4` whenever possible.
   """
-  @spec create_chore(Chore.t, User.t,
+  @spec create_chore(chore :: Chore.t | map, as_user :: User.t,
                      [chores_repo: Chores.t,
                       users_repo: Users.t,
                       auth_mod: Authorization.t])
-    :: {:ok, Chore.t} | :not_authorized
-  def create_chore(chore, user, chores_repo: chores_repo,
+    :: {:ok, Chore.t} | {:error, Ecto.Changeset.t} | :not_authorized
+  def create_chore(%Chore{} = chore, as_user, options) do
+    chore
+    |> Map.from_struct()
+    |> create_chore(as_user, options)
+  end
+  def create_chore(%{} = chore, %User{} = user, chores_repo: chores_repo,
                    users_repo: users_repo, auth_mod: auth_mod) do
-    if auth_mod.authorized?(:manage_chores, user, users_repo) do
-      chores_repo.insert(chore)
+    with true <- auth_mod.authorized?(:manage_chores, user, users_repo),
+         {:ok, chore} <- %Chore{}
+         |> Chore.changeset(chore)
+         |> chores_repo.insert
+    do
+      {:ok, chore}
     else
-      :not_authorized
+      false -> :not_authorized
+      {:error, changeset} -> {:error, changeset}
     end
   end
 end

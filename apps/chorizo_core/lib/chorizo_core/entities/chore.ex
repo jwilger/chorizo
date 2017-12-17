@@ -3,19 +3,36 @@ defmodule ChorizoCore.Entities.Chore do
   Provides functions for working with chore data
   """
 
-  alias __MODULE__
+  use ChorizoCore.Entities.Schema
+  import Ecto.Changeset
 
   @typedoc """
   Contains the data related to a chore in the system's chore library
   """
-  @type t() :: %Chore{
-    name: String.t
+  @type t() :: %__MODULE__{
+    id: String.t | nil,
+    name: String.t | nil
   }
-  defstruct [
-    name: ""
-  ]
+  schema "chores" do
+    field :name, :string
+    timestamps()
+  end
 
-  def new(attributes \\ []) when is_list(attributes) do
-    struct(__MODULE__, attributes)
+  @doc """
+  Builds an `Ecto.Changeset` for the chore data
+  """
+  @spec changeset(%{}) :: Ecto.Changeset.t
+  def changeset(%{} = params), do: changeset(%__MODULE__{}, params)
+
+  @doc """
+  Builds an `Ecto.Changeset` for the chore data
+  ```
+  """
+  @spec changeset(__MODULE__.t, %{}) :: Ecto.Changeset.t
+  def changeset(%__MODULE__{} = chore, params \\ %{}) do
+    chore
+    |> cast(params, [:name])
+    |> validate_required(:name)
+    |> unique_constraint(:name)
   end
 end

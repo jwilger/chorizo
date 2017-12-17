@@ -138,30 +138,6 @@ defmodule ChorizoCore do
   defdelegate authenticate_user(credentials), to: ChorizoCore.Authentication
 
   @doc """
-  Builds and returns a new chore with the specified attributes.
-
-  ```
-  iex> import ChorizoCore
-  iex> new_chore(name: "Eat the food.")
-  %ChorizoCore.Entities.Chore{
-    name: "Eat the food."
-  }
-  ```
-
-  Invalid attributes are ignored:
-
-  ```
-  iex> import ChorizoCore
-  iex> new_chore(name: "Eat the food.", foo: :bar)
-  %ChorizoCore.Entities.Chore{
-    name: "Eat the food."
-  }
-  ```
-  """
-  @spec new_chore(keyword()) :: chore
-  defdelegate new_chore(attributes), to: ChorizoCore.Entities.Chore, as: :new
-
-  @doc """
   Creates a new chore in the system
 
   Users who are admins can create a new chore:
@@ -170,10 +146,9 @@ defmodule ChorizoCore do
   iex> import ChorizoCore
   iex> {:ok, admin} = create_user(%{username: "admin", admin: true},
   iex>                            anonymous_user!())
-  iex> create_chore(new_chore(name: "Foo"), admin)
-  {:ok, %ChorizoCore.Entities.Chore{
-    name: "Foo"
-  }}
+  iex> {:ok, chore} = create_chore(%{name: "Foo"}, admin)
+  iex> chore.name
+  "Foo"
   ```
 
   Users who are not admins can not create new chores:
@@ -183,14 +158,14 @@ defmodule ChorizoCore do
   iex> {:ok, admin} = create_user(%{username: "admin", admin: true},
   iex>                            anonymous_user!())
   iex> {:ok, user} = create_user(%{username: "non_admin", admin: false}, admin)
-  iex> create_chore(new_chore(name: "Foo"), user)
+  iex> create_chore(%{name: "Foo"}, user)
   :not_authorized
   ```
 
   Anonymous users can not create new chores:
   ```
   iex> import ChorizoCore
-  iex> create_chore(new_chore(name: "Foo"), anonymous_user!())
+  iex> create_chore(%{name: "Foo"}, anonymous_user!())
   :not_authorized
   """
   @spec create_chore(chore, user) :: {:ok, chore} | :not_authorized

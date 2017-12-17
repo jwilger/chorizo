@@ -9,9 +9,6 @@ defmodule ChorizoCore.Application do
     # List all child processes to be supervised
     children = [
       ChorizoCore.Repositories.Repo,
-      ChorizoCore.Repositories.Chores.Server
-      # Starts a worker by calling: ChorizoCore.Worker.start_link(arg)
-      # {ChorizoCore.Worker, arg},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
