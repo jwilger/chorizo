@@ -7,7 +7,6 @@ use Mix.Config
 # General application configuration
 config :web_app,
   namespace: Chorizo.WebApp,
-  ecto_repos: [Chorizo.WebApp.Repo],
   generators: [context_app: false]
 
 config :phoenix, :json_library, Jason
