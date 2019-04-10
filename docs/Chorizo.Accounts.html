@@ -8,7 +8,7 @@
     <meta name="project" content="Chorizo vdev">
     <title>Chorizo.Accounts — Chorizo vdev</title>
     <link rel="stylesheet" href="dist/html-75c73d59b7f14fe4fa4e.css" />
-    <script src="dist/sidebar_items-0f21745782.js"></script>
+    <script src="dist/sidebar_items-82a01bce6a.js"></script>
       <script src="docs_config.js"></script>
     <script async src="dist/html-75c73d59b7f14fe4fa4e.js"></script>
     
@@ -67,7 +67,7 @@ Chorizo      </a>
 
       <h1>
         <small class="app-vsn">Chorizo vdev</small>
-Chorizo.Accounts        
+Chorizo.Accounts <small>behaviour</small>        
           <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts.ex#L1" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
@@ -77,6 +77,9 @@ Chorizo.Accounts
 
         <section id="moduledoc">
 <p>Provides the public API for the Accounts bounded-context</p>
+<p>Note that all public functions are also defined as callbacks, so that this
+module can be used as a <a href="https://hexdocs.pm/elixir/Behaviour.html"><code class="inline">Behaviour</code></a> (particularly useful for mocking this
+interface in the test suites of other applications.)</p>
         </section>
 
         <section id="summary" class="details-list">
@@ -93,7 +96,7 @@ Chorizo.Accounts
     </h2>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#create_user/1">create_user(user_attrs)</a>
+    <a href="#create_user/1">create_user(user)</a>
   </div>
     <div class="summary-synopsis"><p>Creates a new instance of the User aggregate.</p></div>
 </div>
@@ -114,8 +117,8 @@ Functions          </h1>
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <h1 class="signature">create_user(user_attrs)</span>
-      <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts.ex#L18" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">create_user(user)</span>
+      <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts.ex#L28" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -128,8 +131,9 @@ Functions          </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Chorizo.Accounts</span><span class="o">.</span><span class="n">create_user</span><span class="p" data-group-id="3928220613-1">(</span><span class="p" data-group-id="3928220613-2">%{</span><span class="ss">email_address</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;nobody@example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;This is an 0k password, I guess.&quot;</span><span class="p" data-group-id="3928220613-2">}</span><span class="p" data-group-id="3928220613-1">)</span><span class="w">
-</span><span class="p" data-group-id="3928220613-3">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3928220613-4">[</span><span class="s">&quot;The create_user/2 API is reserved but has not yet been implemented.&quot;</span><span class="p" data-group-id="3928220613-4">]</span><span class="p" data-group-id="3928220613-3">}</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="kn">alias</span><span class="w"> </span><span class="nc">Chorizo.Accounts.VO.User</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">Chorizo.Accounts</span><span class="o">.</span><span class="n">create_user</span><span class="p" data-group-id="9663676218-1">(</span><span class="p" data-group-id="9663676218-2">%</span><span class="nc" data-group-id="9663676218-2">User</span><span class="p" data-group-id="9663676218-2">{</span><span class="ss">email_address</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;nobody@example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;This is an 0k password, I guess.&quot;</span><span class="p" data-group-id="9663676218-2">}</span><span class="p" data-group-id="9663676218-1">)</span><span class="w">
+</span><span class="p" data-group-id="9663676218-3">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9663676218-4">[</span><span class="s">&quot;The create_user/2 API is reserved but has not yet been implemented.&quot;</span><span class="p" data-group-id="9663676218-4">]</span><span class="p" data-group-id="9663676218-3">}</span></code></pre>
   </section>
 </section>
           </div>

@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.20.1">
     <meta name="project" content="Chorizo vdev">
-    <title>Chorizo.Accounts.Interface — Chorizo vdev</title>
+    <title>Chorizo.Accounts.VO.User — Chorizo vdev</title>
     <link rel="stylesheet" href="dist/html-75c73d59b7f14fe4fa4e.css" />
-    <script src="dist/sidebar_items-0f21745782.js"></script>
+    <script src="dist/sidebar_items-82a01bce6a.js"></script>
       <script src="docs_config.js"></script>
     <script async src="dist/html-75c73d59b7f14fe4fa4e.js"></script>
     
@@ -67,8 +67,8 @@ Chorizo      </a>
 
       <h1>
         <small class="app-vsn">Chorizo vdev</small>
-Chorizo.Accounts.Interface <small>behaviour</small>        
-          <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts/interface.ex#L1" title="View Source" class="view-source" rel="help">
+Chorizo.Accounts.VO.User        
+          <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts/vo/user.ex#L1" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
           </a>
@@ -84,42 +84,44 @@ Chorizo.Accounts.Interface <small>behaviour</small>
             </a>
             Summary
           </h1>
-  <div class="summary-callbacks summary">
+  <div class="summary-types summary">
     <h2>
-      <a href="#callbacks">Callbacks</a>
+      <a href="#types">Types</a>
     </h2>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:create_user/1">create_user(%{})</a>
+    <a href="#t:t/0">t()</a>
   </div>
 </div>
   </div>
         </section>
 
-        <section id="callbacks" class="details-list">
+        <section id="types" class="details-list">
           <h1 class="section-heading">
-            <a class="hover-link" href="#callbacks">
+            <a class="hover-link" href="#types">
               <span class="icon-link" aria-hidden="true"></span>
               <span class="sr-only">Link to this section</span>
             </a>
-Callbacks          </h1>
-          <div class="callbacks-list">
-<section class="detail" id="c:create_user/1">
+Types          </h1>
+          <div class="types-list">
+<section class="detail" id="t:t/0">
     <div class="detail-header">
-    <a href="#c:create_user/1" class="detail-link" title="Link to this callback">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
       <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
+      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature">create_user(%{})</span>
-      <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts/interface.ex#L2" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">t()</span>
+      <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts/vo/user.ex#L2" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
         
       <div class="specs">
-          <pre>create_user(%{email_address: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), password: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}) ::
-  {:ok, %{id: UUID.t(), email_address: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), password_hash: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}}
-  | {:error, [<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()]}</pre>
+          <pre>t() :: %Chorizo.Accounts.VO.User{
+  email_address: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+  id: UUID.t(),
+  password: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()
+}</pre>
       </div>
   </div>
   <section class="docstring">

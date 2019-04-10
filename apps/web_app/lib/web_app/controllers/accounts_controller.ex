@@ -1,12 +1,16 @@
 defmodule Chorizo.WebApp.AccountsController do
   use Chorizo.WebApp, :controller
 
+  alias Chorizo.Accounts.VO.User
+
   @accounts_api Application.get_env(:web_app, :accounts_api, Chorizo.Accounts)
 
   def create_user(conn, %{"email_address" => email_address, "password" => password} = params)
     when is_binary(email_address) and is_binary(password)
   do
-    case @accounts_api.create_user(%{email_address: email_address, password: password}) do
+    %User{email_address: email_address, password: password}
+    |> @accounts_api.create_user()
+    |> case do
       {:ok, user} ->
         conn
         |> put_status(201)
