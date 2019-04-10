@@ -5,7 +5,17 @@ defmodule Chorizo.MixProject do
     [
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+
+      # Docs
+      name: "Chorizo",
+      source_url: "https://github.com/jwilger/chorizo",
+      homepage_url: "http://johnwilger.com/chorizo/",
+      docs: [
+        main: "readme",
+        extras: ["README.md"],
+        output: "docs"
+      ]
     ]
   end
 
@@ -15,6 +25,8 @@ defmodule Chorizo.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    []
+    [
+      {:ex_doc, "~> 0.20", only: :dev, runtime: false}
+    ]
   end
 end
