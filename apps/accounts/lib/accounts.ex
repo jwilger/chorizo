@@ -5,17 +5,15 @@ defmodule Chorizo.Accounts do
 
   @behaviour Chorizo.Accounts.Interface
 
-  @doc ~S"""
+  @doc """
   Creates a new instance of the User aggregate.
 
   *This functionality is not currently implemented.*
 
   ## Examples
 
-    ### API is Reserved but not Implemented
-
-    iex> Chorizo.Accounts.create_user(%{email_address: "nobody@example.com", password: "This is an 0k password, I guess."})
-    {:error, ["The create_user/2 API is reserved but has not yet been implemented."]}
+      iex> Chorizo.Accounts.create_user(%{email_address: "nobody@example.com", password: "This is an 0k password, I guess."})
+      {:error, ["The create_user/2 API is reserved but has not yet been implemented."]}
   """
   def create_user(_user_attrs) do
     {:error, ["The create_user/2 API is reserved but has not yet been implemented."]}

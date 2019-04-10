@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.20.1">
     <meta name="project" content="Chorizo vdev">
-    <title>Chorizo.WebApp.PageController — Chorizo vdev</title>
+    <title>Chorizo.Accounts — Chorizo vdev</title>
     <link rel="stylesheet" href="dist/html-75c73d59b7f14fe4fa4e.css" />
     <script src="dist/sidebar_items-0f21745782.js"></script>
       <script src="docs_config.js"></script>
@@ -67,14 +67,17 @@ Chorizo      </a>
 
       <h1>
         <small class="app-vsn">Chorizo vdev</small>
-Chorizo.WebApp.PageController        
-          <a href="https://github.com/jwilger/chorizo/blob/master/apps/web_app/lib/web_app/controllers/page_controller.ex#L1" title="View Source" class="view-source" rel="help">
+Chorizo.Accounts        
+          <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts.ex#L1" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
           </a>
       </h1>
 
 
+        <section id="moduledoc">
+<p>Provides the public API for the Accounts bounded-context</p>
+        </section>
 
         <section id="summary" class="details-list">
           <h1 class="section-heading">
@@ -90,8 +93,9 @@ Chorizo.WebApp.PageController
     </h2>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#index/2">index(conn, params)</a>
+    <a href="#create_user/1">create_user(user_attrs)</a>
   </div>
+    <div class="summary-synopsis"><p>Creates a new instance of the User aggregate.</p></div>
 </div>
   </div>
         </section>
@@ -104,19 +108,28 @@ Chorizo.WebApp.PageController
             </a>
 Functions          </h1>
           <div class="functions-list">
-<section class="detail" id="index/2">
+<section class="detail" id="create_user/1">
     <div class="detail-header">
-    <a href="#index/2" class="detail-link" title="Link to this function">
+    <a href="#create_user/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <h1 class="signature">index(conn, params)</span>
-      <a href="https://github.com/jwilger/chorizo/blob/master/apps/web_app/lib/web_app/controllers/page_controller.ex#L4" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">create_user(user_attrs)</span>
+      <a href="https://github.com/jwilger/chorizo/blob/master/apps/accounts/lib/accounts.ex#L18" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
           </div>
   <section class="docstring">
+<p>Creates a new instance of the User aggregate.</p>
+<p><em>This functionality is not currently implemented.</em></p>
+<h2 id="create_user/1-examples" class="section-heading">
+  <a href="#create_user/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Chorizo.Accounts</span><span class="o">.</span><span class="n">create_user</span><span class="p" data-group-id="3928220613-1">(</span><span class="p" data-group-id="3928220613-2">%{</span><span class="ss">email_address</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;nobody@example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;This is an 0k password, I guess.&quot;</span><span class="p" data-group-id="3928220613-2">}</span><span class="p" data-group-id="3928220613-1">)</span><span class="w">
+</span><span class="p" data-group-id="3928220613-3">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3928220613-4">[</span><span class="s">&quot;The create_user/2 API is reserved but has not yet been implemented.&quot;</span><span class="p" data-group-id="3928220613-4">]</span><span class="p" data-group-id="3928220613-3">}</span></code></pre>
   </section>
 </section>
           </div>
