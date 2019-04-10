@@ -19,8 +19,9 @@ defmodule Chorizo.WebApp.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Chorizo.WebApp do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", Chorizo.WebApp do
+    pipe_through :api
+
+    post "/accounts/create_user", AccountsController, :create_user
+  end
 end
