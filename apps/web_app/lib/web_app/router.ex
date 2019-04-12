@@ -18,4 +18,18 @@ defmodule Chorizo.WebApp.Router do
 
     get "/", PageController, :index
   end
+
+  scope "/api" do
+    pipe_through :api
+
+    forward "/", Absinthe.Plug,
+      schema: Chorizo.WebApp.Schema
+  end
+
+  scope "/graphiql" do
+    pipe_through :api
+    forward "/", Absinthe.Plug.GraphiQL,
+      schema: Chorizo.WebApp.Schema,
+      interface: :simple
+  end
 end
