@@ -17,7 +17,7 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
         }}
       end)
 
-      User.create_user("nobody@example.com", "foobarbaz")
+      User.create_user(%{email_address: "nobody@example.com", password: "foobarbaz"}, %{})
     end
 
     test "returns the {:ok, user} tuple when successful" do
@@ -30,7 +30,7 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
       end)
 
       {:ok, %{id: user_id, email_address: email_address}} =
-        User.create_user("nobody@example.com", "foobarbaz")
+        User.create_user(%{email_address: "nobody@example.com", password: "foobarbaz"}, %{})
 
       assert "e93c98b2-628f-4617-a159-14b492156c9f" == user_id
       assert "nobody@example.com" == email_address
@@ -43,7 +43,7 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
       end)
 
       assert {:error, ["Something happened"]} == 
-        User.create_user("nobody@example.com", "foobarbaz")
+        User.create_user(%{email_address: "nobody@example.com", password: "foobarbaz"}, %{})
     end
   end
 end
