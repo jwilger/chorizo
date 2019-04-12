@@ -18,10 +18,4 @@ defmodule Chorizo.WebApp.Router do
 
     get "/", PageController, :index
   end
-
-  scope "/api/v1", Chorizo.WebApp do
-    pipe_through :api
-
-    post "/accounts/create_user", AccountsController, :create_user
-  end
 end
