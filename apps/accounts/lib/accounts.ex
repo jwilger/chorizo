@@ -14,8 +14,6 @@ defmodule Chorizo.Accounts do
   @doc """
   Creates a new instance of the User aggregate.
 
-  *This functionality is not currently implemented.*
-
   ## Examples
 
   ### Successful User Creation
@@ -58,4 +56,25 @@ defmodule Chorizo.Accounts do
         {:ok, %VO.User{email_address: email_address, id: UUID.uuid4(:hex)}}
     end
   end
+
+  @doc """
+  Authenticates a user by their email address and password
+
+  Currently this function is unimplemented and will alway report an
+  authentication failure.
+
+  ## Examples
+
+  ### User does not exist
+
+      iex> alias Chorizo.Accounts.VO.User
+      iex> Chorizo.Accounts.authenticate_user(
+      ...>   %User{email_address: "nobody@example.com", password: "foo"}
+      ...> )
+      {:error, :authentication_failed}
+  """
+  @spec authenticate_user(
+    user :: VO.User.t(:email_address, :password)
+  ) :: {:ok, VO.User.t(:id)} | {:error, :authentication_failed}
+  def authenticate_user(_user), do: {:error, :authentication_failed}
 end
