@@ -60,4 +60,5 @@ config :web_app, Chorizo.WebApp.Endpoint,
     ]
   ]
 
-config :web_app, :jwt_secret, "Not so secret, really"
+config :web_app, Chorizo.WebApp.Guardian,
+  secret_key: "Not very secret, really"

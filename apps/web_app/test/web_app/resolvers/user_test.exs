@@ -35,9 +35,9 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
       assert user.id == "e93c98b2-628f-4617-a159-14b492156c9f"
       assert user.email_address == "nobody@example.com"
 
-      {:ok, user_data} = Chorizo.WebApp.verify_jwt(jwt, max_age: 1)
+      {:ok, %{"sub" => sub}} = Chorizo.WebApp.Guardian.decode_and_verify(jwt)
 
-      assert user_data.id == user.id
+      assert sub == user.id
     end
 
     test "returns the {:error, messages} tuple when an error occurs" do

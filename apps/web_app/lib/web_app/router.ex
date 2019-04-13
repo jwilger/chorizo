@@ -13,6 +13,11 @@ defmodule Chorizo.WebApp.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug Chorizo.WebApp.Guardian.Pipeline
+    plug Chorizo.WebApp.AbsintheContext
+  end
+
   scope "/", Chorizo.WebApp do
     pipe_through :browser
 
@@ -20,14 +25,14 @@ defmodule Chorizo.WebApp.Router do
   end
 
   scope "/api" do
-    pipe_through :api
+    pipe_through [:api, :auth]
 
     forward "/", Absinthe.Plug,
       schema: Chorizo.WebApp.Schema
   end
 
   scope "/graphiql" do
-    pipe_through :api
+    pipe_through [:api, :auth]
     forward "/", Absinthe.Plug.GraphiQL,
       schema: Chorizo.WebApp.Schema,
       interface: :simple

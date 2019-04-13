@@ -41,6 +41,7 @@ defmodule Chorizo.WebApp.MixProject do
       {:absinthe_phoenix, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},
       {:gettext, "~> 0.11"},
+      {:guardian, "~> 1.0"},
       {:jason, "~> 1.0"},
       {:mox, "~> 0.5"},
       {:phoenix, "~> 1.4.3"},

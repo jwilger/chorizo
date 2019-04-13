@@ -7,7 +7,12 @@ defmodule Chorizo.WebApp.Resolvers.User do
     |> @accounts_api.create_user
     |> case do
       {:error, _} = result -> result
-      {:ok, user} -> {:ok, %{user: user, jwt: Chorizo.WebApp.sign_jwt(user)}}
+      {:ok, user} -> {:ok, %{user: user, jwt: jwt(user)}}
     end
+  end
+
+  defp jwt(user) do
+    {:ok, token, _claims} = Chorizo.WebApp.Guardian.encode_and_sign(user)
+    token
   end
 end

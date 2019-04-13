@@ -18,6 +18,11 @@ config :web_app, Chorizo.WebApp.Endpoint,
   render_errors: [view: Chorizo.WebApp.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Chorizo.WebApp.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :web_app, Chorizo.WebApp.Guardian,
+  issuer: "web_app",
+  secret_key: {:system, "JWT_SECRET"},
+  secret_fetcher: Chorizo.WebApp.Guardian.SecretFetcher
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
