@@ -59,3 +59,5 @@ config :web_app, Chorizo.WebApp.Endpoint,
       ~r"lib/web_app/templates/.*(eex)$"
     ]
   ]
+
+config :web_app, :jwt_secret, "Not so secret, really"

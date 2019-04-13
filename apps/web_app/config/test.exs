@@ -11,3 +11,5 @@ config :web_app, Chorizo.WebApp.Endpoint,
   server: false
 
 config :web_app, :accounts_api, Chorizo.Accounts.Mock
+
+config :web_app, :jwt_secret, "Not so secret, really"

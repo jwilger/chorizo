@@ -60,6 +60,26 @@ defmodule Chorizo.WebApp do
   end
 
   @doc """
+  Turns the specified data into a JWT
+  """
+  def sign_jwt(data) do
+    Phoenix.Token.sign(Chorizo.WebApp.Endpoint, jwt_secret(), data)
+  end
+
+  @doc """
+  Verifies the validity of a JWT
+  """
+  def verify_jwt(token, options \\ []) do
+    Phoenix.Token.verify(Chorizo.WebApp.Endpoint, jwt_secret(), token, options)
+  end
+
+  defp jwt_secret do
+    System.get_env("JWT_SECRET") ||
+      Application.get_env(:web_app, :jwt_secret) ||
+      raise "JWT_SECRET environment variable not set"
+  end
+
+  @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """
   defmacro __using__(which) when is_atom(which) do

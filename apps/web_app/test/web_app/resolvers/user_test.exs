@@ -8,7 +8,7 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
   setup :verify_on_exit!
 
   describe "create_user/2" do
-    test "calls Accounts.create_user/2 with the supplied arguments" do
+    test "calls Accounts.create_user/2 with a User struct created from the supplied arguments" do
       Chorizo.Accounts.Mock
       |> expect(:create_user, fn %Chorizo.Accounts.VO.User{} = user ->
         {:ok, %Chorizo.Accounts.VO.User{
@@ -20,7 +20,7 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
       User.create_user(%{email_address: "nobody@example.com", password: "foobarbaz"}, %{})
     end
 
-    test "returns the {:ok, user} tuple when successful" do
+    test "returns the user data and a JWT for the user when successful" do
       Chorizo.Accounts.Mock
       |> expect(:create_user, fn user ->
         {:ok, %Chorizo.Accounts.VO.User{
@@ -29,11 +29,15 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
         }}
       end)
 
-      {:ok, %{id: user_id, email_address: email_address}} =
-        User.create_user(%{email_address: "nobody@example.com", password: "foobarbaz"}, %{})
+      {:ok, %{user: user, jwt: jwt}} =
+        User.create_user(%{email_address: "nobody@example.com", password: "foo"}, %{})
 
-      assert "e93c98b2-628f-4617-a159-14b492156c9f" == user_id
-      assert "nobody@example.com" == email_address
+      assert user.id == "e93c98b2-628f-4617-a159-14b492156c9f"
+      assert user.email_address == "nobody@example.com"
+
+      {:ok, user_data} = Chorizo.WebApp.verify_jwt(jwt, max_age: 1)
+
+      assert user_data.id == user.id
     end
 
     test "returns the {:error, messages} tuple when an error occurs" do
