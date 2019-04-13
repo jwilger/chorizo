@@ -13,6 +13,10 @@ defmodule Chorizo.WebApp.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :oauth do
+    plug :accepts, ["json", "html"]
+  end
+
   pipeline :auth do
     plug Chorizo.WebApp.Guardian.Pipeline
     plug Chorizo.WebApp.AbsintheContext
@@ -22,6 +26,11 @@ defmodule Chorizo.WebApp.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/oauth/token", Chorizo.WebApp do
+    pipe_through :oauth
+    post "/", AuthController, :token
   end
 
   scope "/api" do
