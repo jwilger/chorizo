@@ -47,7 +47,7 @@ defmodule Chorizo.Accounts do
   """
   @spec create_user(
     user :: VO.User.t(:email_address, :password)
-  ) :: {:ok, VO.User.t} | {:error, [String.t,...]}
+  ) :: {:ok, VO.User.t} | {:error, [String.t, ...]}
   def create_user(%VO.User{} = user) do
     case user do
       %VO.User{password: nil, email_address: nil} ->
