@@ -1,5 +1,9 @@
 defmodule Chorizo.WebApp.Guardian do
-  @ttl_seconds 86400 # 1 Day
+  @moduledoc """
+  Defines how `Guardian` interacts with the application
+  """
+
+  @ttl_seconds 86_400 # 1 Day
 
   use Guardian, otp_app: :web_app,
     ttl: {@ttl_seconds, :seconds}

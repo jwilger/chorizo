@@ -1,4 +1,6 @@
 defmodule Chorizo.WebApp.AuthControllerTest do
+  @accounts_api Chorizo.Accounts.Mock
+
   use Chorizo.WebApp.ConnCase
 
   import Mox
@@ -26,8 +28,7 @@ defmodule Chorizo.WebApp.AuthControllerTest do
       email_address = "nobody@example.com"
       password = "This is an 0k password, I guess."
 
-      Chorizo.Accounts.Mock
-      |> expect(:authenticate_user,
+      expect(@accounts_api, :authenticate_user,
         fn %{email_address: ^email_address, password: ^password} ->
           {:ok, %VO.User{id: user_id}}
         end)
@@ -43,8 +44,7 @@ defmodule Chorizo.WebApp.AuthControllerTest do
 
   describe "POST /auth/token with valid credentials" do
     setup %{conn: conn} do
-      Chorizo.Accounts.Mock
-      |> stub(:authenticate_user, fn _ ->
+      stub(@accounts_api, :authenticate_user, fn _ ->
         {:ok, %VO.User{id: "1234"}}
       end)
 
@@ -87,8 +87,7 @@ defmodule Chorizo.WebApp.AuthControllerTest do
 
   describe "POST /auth/token with invalid credentials" do
     setup %{conn: conn} do
-      Chorizo.Accounts.Mock
-      |> stub(:authenticate_user, fn _ ->
+      stub(@accounts_api, :authenticate_user, fn _ ->
         {:error, :authentication_failed}
       end)
 

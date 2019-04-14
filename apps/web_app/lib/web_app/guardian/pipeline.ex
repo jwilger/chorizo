@@ -1,4 +1,8 @@
 defmodule Chorizo.WebApp.Guardian.Pipeline do
+  @moduledoc """
+  Defines the `Plug` pipeline used to authenticate users via Guardian
+  """
+
   use Guardian.Plug.Pipeline,
     otp_app: :web_app,
     error_handler: Chorizo.WebApp.Guardian.ErrorHandler,

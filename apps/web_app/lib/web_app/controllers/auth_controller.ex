@@ -31,8 +31,7 @@ defmodule Chorizo.WebApp.AuthController do
 
   defp send_token(conn, user) do
     {:ok, token, _claims} = Chorizo.WebApp.Guardian.encode_and_sign(user)
-    conn
-    |> json(%{
+    json(conn, %{
       access_token: token,
       token_type: "bearer",
       expires_in: Chorizo.WebApp.Guardian.expires_in_seconds()

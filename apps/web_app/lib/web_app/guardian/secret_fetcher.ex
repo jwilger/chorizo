@@ -1,4 +1,12 @@
 defmodule Chorizo.WebApp.Guardian.SecretFetcher do
+  @moduledoc """
+  Defines how `Guardian` loads the JWT secret key
+
+  Default Guardian behavior is to pull it from `Application.get_env/3`. This
+  overrides that behavior so that the application configuration can use a
+  `{:system, "VAR_NAME"}` tuple and Guardian will retrieve the value via
+  `System.get_env/1`.
+  """
   use Guardian.Token.Jwt.SecretFetcher
 
   def fetch_signing_secret(impl_mod, opts) do

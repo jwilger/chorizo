@@ -1,4 +1,8 @@
 defmodule Chorizo.WebApp.Guardian.ErrorHandler do
+  @moduledoc """
+  Defines how errors in the Guardian functionality should be handled
+  """
+
   import Plug.Conn
 
   @behaviour Guardian.Plug.ErrorHandler

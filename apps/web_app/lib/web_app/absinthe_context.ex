@@ -1,4 +1,10 @@
 defmodule Chorizo.WebApp.AbsintheContext do
+  @moduledoc """
+  Adds the current resource from Guardian into the Absinthe execution context
+
+  See the `:auth` pipeline in `Chorizo.WebApp.Router`.
+  """
+
   @behaviour Plug
 
   def init(opts), do: opts

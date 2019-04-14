@@ -1,4 +1,6 @@
 defmodule Chorizo.WebApp.Resolvers.UserTest do
+  @accounts_api Chorizo.Accounts.Mock
+
   use Chorizo.WebApp.ConnCase
 
   alias Chorizo.WebApp.Resolvers.User
@@ -9,8 +11,7 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
 
   describe "create_user/2" do
     test "calls Accounts.create_user/2 with a User struct created from the supplied arguments" do
-      Chorizo.Accounts.Mock
-      |> expect(:create_user, fn %Chorizo.Accounts.VO.User{} = user ->
+      expect(@accounts_api, :create_user, fn %Chorizo.Accounts.VO.User{} = user ->
         {:ok, %Chorizo.Accounts.VO.User{
           id: "e93c98b2-628f-4617-a159-14b492156c9f",
           email_address: user.email_address
@@ -21,8 +22,7 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
     end
 
     test "returns the user data and a JWT for the user when successful" do
-      Chorizo.Accounts.Mock
-      |> expect(:create_user, fn user ->
+      expect(@accounts_api, :create_user, fn user ->
         {:ok, %Chorizo.Accounts.VO.User{
           id: "e93c98b2-628f-4617-a159-14b492156c9f",
           email_address: user.email_address
@@ -41,12 +41,11 @@ defmodule Chorizo.WebApp.Resolvers.UserTest do
     end
 
     test "returns the {:error, messages} tuple when an error occurs" do
-      Chorizo.Accounts.Mock
-      |> expect(:create_user, fn _ ->
+      expect(@accounts_api, :create_user, fn _ ->
         {:error, ["Something happened"]}
       end)
 
-      assert {:error, ["Something happened"]} == 
+      assert {:error, ["Something happened"]} ==
         User.create_user(%{email_address: "nobody@example.com", password: "foobarbaz"}, %{})
     end
   end

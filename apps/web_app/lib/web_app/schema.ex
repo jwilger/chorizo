@@ -1,4 +1,8 @@
 defmodule Chorizo.WebApp.Schema do
+  @moduledoc """
+  Defines the GraphQL schema used by `Absinthe`
+  """
+
   use Absinthe.Schema
 
   alias Chorizo.WebApp.Resolvers
@@ -21,7 +25,6 @@ defmodule Chorizo.WebApp.Schema do
       resolve &Resolvers.User.create_user/2
     end
   end
-
 
   object :create_user_response do
     @desc "The attributes for the user that was just created"
