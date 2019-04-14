@@ -1,4 +1,4 @@
-/*global require _dirname module*/
+/*global require __dirname module*/
 
 const path = require('path');
 const glob = require('glob');
