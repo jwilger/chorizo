@@ -18,6 +18,17 @@ defmodule Chorizo.WebApp.AuthController do
     end
   end
 
+  def token(conn, _) do
+    conn
+    |> put_status(400)
+    |> json(%{
+      error: "unsupported_grant_type",
+      error_description: """
+        This OAuth server supports the following grant types: 'password'
+        """
+    })
+  end
+
   defp send_token(conn, user) do
     {:ok, token, _claims} = Chorizo.WebApp.Guardian.encode_and_sign(user)
     conn
@@ -34,17 +45,6 @@ defmodule Chorizo.WebApp.AuthController do
     |> json(%{
       error: "invalid_client",
       error_description: "Authentication Failed"
-    })
-  end
-
-  def token(conn, _) do
-    conn
-    |> put_status(400)
-    |> json(%{
-      error: "unsupported_grant_type",
-      error_description: """
-        This OAuth server supports the following grant types: 'password'
-        """
     })
   end
 end
