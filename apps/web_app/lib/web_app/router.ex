@@ -44,6 +44,6 @@ defmodule Chorizo.WebApp.Router do
     pipe_through [:api, :auth]
     forward "/", Absinthe.Plug.GraphiQL,
       schema: Chorizo.WebApp.Schema,
-      interface: :simple
+      interface: :advanced
   end
 end
