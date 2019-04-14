@@ -33,8 +33,7 @@ defmodule Chorizo.WebApp.AuthControllerTest do
           {:ok, %VO.User{id: user_id}}
         end)
 
-      conn
-      |> post(Routes.auth_path(conn, :token), %{
+      post(conn, Routes.auth_path(conn, :token), %{
         "grant_type" => "password",
         "username" => email_address,
         "password" => password
