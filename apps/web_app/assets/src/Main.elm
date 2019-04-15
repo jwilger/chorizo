@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Browser.Navigation exposing (Key)
+import Element exposing (Element, el, text)
 import Url exposing (Url)
 
 
@@ -25,7 +26,10 @@ initialModel =
 view : Model -> Browser.Document Msg
 view model =
     { title = "Chorizo"
-    , body = []
+    , body =
+        [ Element.layout []
+            (el [] (text "Hello, World!"))
+        ]
     }
 
 
