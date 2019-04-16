@@ -24,14 +24,4 @@ defmodule Chorizo.WebApp.ChannelCase do
       @endpoint Chorizo.WebApp.Endpoint
     end
   end
-
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Chorizo.WebApp.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Chorizo.WebApp.Repo, {:shared, self()})
-    end
-
-    :ok
-  end
 end

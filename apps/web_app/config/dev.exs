@@ -59,3 +59,6 @@ config :web_app, Chorizo.WebApp.Endpoint,
       ~r"lib/web_app/templates/.*(eex)$"
     ]
   ]
+
+config :web_app, Chorizo.WebApp.Guardian,
+  secret_key: "Not very secret, really"

@@ -9,3 +9,8 @@ use Mix.Config
 config :web_app, Chorizo.WebApp.Endpoint,
   http: [port: 4002],
   server: false
+
+config :web_app, :accounts_api, Chorizo.Accounts.Mock
+
+config :web_app, Chorizo.WebApp.Guardian,
+  secret_key: "Not very secret, really"

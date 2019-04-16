@@ -26,13 +26,7 @@ defmodule Chorizo.WebApp.ConnCase do
     end
   end
 
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Chorizo.WebApp.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Chorizo.WebApp.Repo, {:shared, self()})
-    end
-
+  setup _tags do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

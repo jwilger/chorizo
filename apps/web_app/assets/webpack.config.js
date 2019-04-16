@@ -1,3 +1,5 @@
+/*global require __dirname module*/
+
 const path = require('path');
 const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -13,7 +15,7 @@ module.exports = (env, options) => ({
     ]
   },
   entry: {
-      './js/app.js': ['./js/app.js'].concat(glob.sync('./vendor/**/*.js'))
+    './js/app.js': ['./js/app.js'].concat(glob.sync('./vendor/**/*.js'))
   },
   output: {
     filename: 'app.js',
@@ -38,7 +40,7 @@ module.exports = (env, options) => ({
         use: {
           loader: 'elm-webpack-loader',
           options: {
-            debug: options.mode === "development"
+            debug: options.mode === 'development'
           }
         }
       }
