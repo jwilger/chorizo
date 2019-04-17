@@ -26,6 +26,7 @@ defmodule Chorizo.WebApp.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/signup", PageController, :index
   end
 
   scope "/oauth/token", Chorizo.WebApp do
