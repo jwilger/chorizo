@@ -7,7 +7,8 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import Url exposing (Url)
+import Html exposing (Html)
+import Url
 
 
 
@@ -32,19 +33,27 @@ view : Model -> Browser.Document Msg
 view model =
   { title = "Chorizo"
   , body =
-      [ Element.layout []
-          ( case model.url.path of
-              "/" ->
-                loginForm model
+      [ case model.url.path of
+          "/" ->
+            viewLogin model
 
-              "/signup" ->
-                signupForm model
+          "/signup" ->
+            viewSignup model
 
-              _ ->
-                text "Something real bad happened. :("
-          )
+          _ ->
+            Html.h1 [] [ Html.text "Whoops!" ]
       ]
   }
+
+viewLogin : Model -> Html Msg
+viewLogin model =
+  Element.layout []
+    (loginForm model)
+
+viewSignup : Model -> Html Msg
+viewSignup model =
+  Element.layout []
+    (signupForm model)
 
 signupForm : Model -> Element Msg
 signupForm model =
@@ -53,8 +62,8 @@ signupForm model =
 loginForm : Model -> Element Msg
 loginForm model =
   column [ spacing 30, centerY, centerX]
-    [ loginRow model.submitted
-    , Input.email []
+    [ loginRow
+    , Input.username []
         { onChange = EmailInputChanged
         , text = model.emailInput
         , placeholder = Just (Input.placeholder [] (text "email"))
@@ -67,23 +76,23 @@ loginForm model =
         , label = Input.labelHidden "Email"
         , show = False
         }
-    , Input.button []
-        { onPress = Just SubmitLogin
-        , label = (el 
-          [ Background.color (rgb255 50 0 40)
-          , Border.rounded 3
-          , Font.color (rgb255 255 255 255)
-          , padding 10
-          ] (text "Login"))
-        }
+    , if model.submitted
+        then text "Submitting..."
+        else Input.button []
+          { onPress = Just SubmitLogin
+          , label = (el 
+            [ Background.color (rgb255 50 0 40)
+            , Border.rounded 3
+            , Font.color (rgb255 255 255 255)
+            , padding 10
+            ] (text "Login"))
+          }
     ]
 
-loginRow : Bool -> Element Msg
-loginRow submitted =
+loginRow : Element Msg
+loginRow =
   row [ width fill ]
-    [ text (if submitted
-        then "Submitting..."
-        else "Login")
+    [ text "Login"
     , el [ centerX ] (text "or")
     , Element.link [ alignRight, Font.underline, Font.color (rgb255 0 0 255) ]
         { url = "/signup"
@@ -98,7 +107,7 @@ loginRow submitted =
 
 type Msg
   = UrlRequested Browser.UrlRequest
-  | UrlChanged Url
+  | UrlChanged Url.Url
   | PasswordInputChanged String
   | EmailInputChanged String
   | SubmitLogin
@@ -139,7 +148,7 @@ subscriptions model =
 --> Initialization
 
 
-init : flags -> Url -> Nav.Key -> ( Model, Cmd msg )
+init : flags -> Url.Url -> Nav.Key -> ( Model, Cmd msg )
 init flags url key =
   ( { loggedIn = False
     , emailInput = ""
