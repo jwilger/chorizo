@@ -2,18 +2,12 @@ module Main exposing (main)
 
 import Browser
 import Browser.Navigation as Nav
-import Debug
 import Element exposing (Element, el, text, column, spacing, centerY, padding, rgb255, centerX, alignRight, row, width, fill)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import GraphQl exposing (Operation, Variables, Query, Named, Mutation)
-import GraphQl.Http
-import Http exposing (Error)
 import Html exposing (Html)
-import Json.Encode as Encode
-import Json.Decode as Decode exposing (Decoder, field, maybe, string)
 import Url
 
 
@@ -30,13 +24,6 @@ type alias Model =
   , key : Nav.Key
   }
 
-type alias JWT =
-  { jwt : Maybe String }
-
-type alias User =
-  { emailAddress : Maybe String
-  , id : Maybe String
-  }
 
 
 --> View
@@ -121,10 +108,10 @@ loginRow =
 type Msg
   = UrlRequested Browser.UrlRequest
   | UrlChanged Url.Url
-  | GraphQlMsg (Result Error JWT)
   | PasswordInputChanged String
   | EmailInputChanged String
   | SubmitLogin
+
 
 update msg model =
   case msg of
@@ -151,44 +138,10 @@ update msg model =
       ( { model | emailInput = "", passwordInput = "", submitted = True }
       , Cmd.none
       )
-      
-    GraphQlMsg _ ->
-      ( model, Cmd.none )
 
 
 subscriptions model =
   Sub.none
-
-
-
---> Setup Graphql
-
-
-decodeUser : Decoder JWT
-decodeUser =
-  Decode.map JWT
-    (maybe (field "jwt" string))
-
-userModifying : Operation Mutation Named
-userModifying =
-  GraphQl.named "CreateNewUser"
-    [ GraphQl.field "createUser"
-      |> GraphQl.withArgument "users"
-        (GraphQl.input
-          [ ("emailAddress", GraphQl.variable "email")
-          , ("password", GraphQl.variable "passwd")
-          ]
-        )
-    ]
-
-sendSignupRequest : String -> String -> (Result Http.Error a -> Msg) -> Decoder a -> Cmd Msg
-sendSignupRequest email password msg decoder =
-  GraphQl.mutation userModifying
-    |> GraphQl.addVariables
-      [ ("email", Encode.string email)
-      , ("passwd", Encode.string password)
-      ]
-    |> GraphQl.Http.send "/graphql" GraphQlMsg decodeUser
 
 
 
